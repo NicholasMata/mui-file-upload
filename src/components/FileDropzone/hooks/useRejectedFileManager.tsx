@@ -1,0 +1,39 @@
+import { useState } from "react";
+
+type RejectedFileManager = {
+  /** An array of files that have been rejected and should not be uploaded. */
+  rejectedFiles: File[];
+  /** Add an array of files to `rejectedFiles` */
+  addRejected: (files: File | File[]) => void;
+  /** Remove a file from `rejectedFiles` */
+  removeRejected: (files: File | File[]) => void;
+};
+export const useRejectedFileManager = (): RejectedFileManager => {
+  const [rejectedFiles, setRejectedFiles] = useState<File[]>([]);
+
+  const addRejected = (files: File | File[]) => {
+    setRejectedFiles(append(files));
+  };
+  const removeRejected = (file: File | File[]) => {
+    setRejectedFiles(remove(file));
+  };
+  return {
+    rejectedFiles,
+    addRejected,
+    removeRejected,
+  };
+};
+
+function append(fileToAppend: File | File[]) {
+  return (prev: File[]) => [
+    ...prev,
+    ...(Array.isArray(fileToAppend) ? fileToAppend : [fileToAppend]),
+  ];
+}
+
+function remove(fileToRemove: File | File[]) {
+  return (prev: File[]) =>
+    Array.isArray(fileToRemove)
+      ? prev.filter((p) => !fileToRemove.includes(p))
+      : prev.filter((p) => p !== fileToRemove);
+}
