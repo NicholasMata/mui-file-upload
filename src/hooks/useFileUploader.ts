@@ -1,5 +1,6 @@
 import { useCallback } from "react";
-import { FileUpload } from "types";
+import { FileUploaderObservers } from "./types";
+import { FileUpload } from "../types";
 
 export type FileUploader<Response> = {
   /** A function that can be called to upload a file or retry a failed file upload. */
@@ -11,15 +12,6 @@ export type FileUploadService<Response> = (
   file: File,
   onProgress: (progress: number) => void
 ) => Promise<Response>;
-
-export type FileUploaderObservers<Response = string> = {
-  onFileUploadStart: (
-    newFileUpload: FileUpload<Response>,
-    isRetry: boolean
-  ) => void;
-  onFileProgressUpdate: (updatedFileUpload: FileUpload<Response>) => void;
-  onFileUploadComplete: (completedFileUpload: FileUpload<Response>) => void;
-};
 
 export const useFileUploader = <Response = string>(
   networkService: FileUploadService<Response>,

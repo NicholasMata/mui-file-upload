@@ -1,4 +1,4 @@
-import { FileUpload } from "types";
+import { FileUpload } from "../types";
 
 export type FileUploadStatus = "Uploading" | "Failed" | "Completed";
 

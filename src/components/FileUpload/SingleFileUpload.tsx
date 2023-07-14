@@ -3,22 +3,13 @@ import {
   useRejectedFileManager,
   FileDropzone,
   FileDropzoneInputBody,
-  FileDropzoneInputBodyProps,
 } from "../FileDropzone";
 import { FileUploadResults } from "./FileUploadResults";
-import { FileUploadService, useFileUploader } from "@hooks/useFileUploader";
-import {
-  FileUploadManager,
-  useFileUploaderManager,
-} from "@hooks/useFileUploaderManager";
-import { FileUpload } from "types";
+import { useFileUploaderManager, useFileUploader } from "../../hooks";
+import { BaseFileUploadProps } from "./types";
 
-export type SingleFileUploadProps<Response = string> = {
-  uploadService: FileUploadService<Response>;
-  onSuccessfulUpload?: (fileUpload: FileUpload<Response>) => void;
-  fileManager?: FileUploadManager<Response>;
-  acceptsOnly?: string;
-} & FileDropzoneInputBodyProps;
+export type SingleFileUploadProps<Response = string> =
+  BaseFileUploadProps<Response>;
 
 export const SingleFileUpload = <Response = string,>(
   props: SingleFileUploadProps<Response>
@@ -28,7 +19,7 @@ export const SingleFileUpload = <Response = string,>(
     acceptsOnly,
     onSuccessfulUpload,
     fileManager,
-    ...fileDropzoneInputBodyProps
+    body = <FileDropzoneInputBody />,
   } = props;
   const { rejectedFiles, addRejected, removeRejected } =
     useRejectedFileManager();
@@ -67,7 +58,7 @@ export const SingleFileUpload = <Response = string,>(
             onFilesRejected={addRejected}
             acceptsOnly={acceptsOnly}
           >
-            <FileDropzoneInputBody {...fileDropzoneInputBodyProps} />
+            {body}
           </FileDropzone>
         </Box>
       </Fade>

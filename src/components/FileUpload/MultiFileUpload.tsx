@@ -1,28 +1,38 @@
-import { Stack, Box, Grow, Slide } from "@mui/material";
-import { FileUploadCard, FileUploadCardActions } from "../FileUploadCard";
-import { RejectedFileUploadAlert } from "../RejectedFileUploadAlert";
-import { FileUploadService, useFileUploader } from "@hooks/useFileUploader";
-import { useFileUploaderManager } from "@hooks/useFileUploaderManager";
+import { Stack } from "@mui/material";
+import { useFileUploaderManager, useFileUploader } from "../../hooks";
 import {
   useRejectedFileManager,
   FileDropzone,
   FileDropzoneBody,
-} from "@components/FileDropzone";
+} from "../FileDropzone";
+import { BaseFileUploadProps } from "./types";
+import { FileUploadResults } from "./FileUploadResults";
 
-export type MultiFileUploadProps<Response = string> = {
-  uploadService: FileUploadService<Response>;
-  acceptsOnly?: string;
-};
+export type MultiFileUploadProps<Response = string> =
+  BaseFileUploadProps<Response>;
 export const MultiFileUpload = <Response = string,>(
   props: MultiFileUploadProps<Response>
 ) => {
-  const { uploadService, acceptsOnly } = props;
+  const {
+    uploadService,
+    acceptsOnly,
+    onSuccessfulUpload,
+    fileManager,
+    body = <FileDropzoneBody />,
+  } = props;
   const { rejectedFiles, addRejected, removeRejected } =
     useRejectedFileManager();
 
   const { fileUploads, removeFileUpload, handlers } =
-    useFileUploaderManager<Response>();
-  const { upload } = useFileUploader(uploadService, handlers);
+    fileManager ?? useFileUploaderManager<Response>();
+  const { upload } = useFileUploader(uploadService, {
+    onFileUploadStart: handlers.onFileUploadStart,
+    onFileProgressUpdate: handlers.onFileProgressUpdate,
+    onFileUploadComplete: (fu) => {
+      onSuccessfulUpload?.(fu);
+      handlers.onFileUploadComplete(fu);
+    },
+  });
 
   return (
     <Stack spacing={2}>
@@ -31,36 +41,17 @@ export const MultiFileUpload = <Response = string,>(
         onFilesRejected={addRejected}
         acceptsOnly={acceptsOnly}
       >
-        <FileDropzoneBody />
+        {body}
       </FileDropzone>
-      <Stack spacing={1}>
-        {rejectedFiles.map((f, i) => (
-          <Grow in key={`rejected-${i}`}>
-            <RejectedFileUploadAlert
-              filename={f.name}
-              severity="warning"
-              onClose={() => removeRejected(f)}
-            />
-          </Grow>
-        ))}
-        {fileUploads.failed.map((f) => (
-          <FileUploadCard
-            key={f.id}
-            fileUpload={f}
-            actions={<FileUploadCardActions onRetry={() => upload(f)} />}
-          />
-        ))}
-        {fileUploads.inProgress.map((f) => (
-          <Slide direction="right" in={true} key={f.id}>
-            <Box>
-              <FileUploadCard fileUpload={f} />
-            </Box>
-          </Slide>
-        ))}
-        {fileUploads.successful.map((f) => (
-          <FileUploadCard key={f.id} fileUpload={f} />
-        ))}
-      </Stack>
+      <FileUploadResults
+        rejected={rejectedFiles}
+        failed={fileUploads.failed}
+        inProgress={fileUploads.inProgress}
+        successful={onSuccessfulUpload ? [] : fileUploads.successful}
+        onRetry={upload}
+        onDismissRejected={removeRejected}
+        onRemoveFileUpload={removeFileUpload}
+      />
     </Stack>
   );
 };

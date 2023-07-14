@@ -12,13 +12,7 @@
     "moduleResolution": "node",
     "emitDeclarationOnly": true,
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "baseUrl": "./src",
-    "rootDir": "./src",
-    "paths": {
-      "@components/*": ["components/*"],
-      "@hooks/*": ["hooks/*"]
-    }
+    "forceConsistentCasingInFileNames": true
   },
   "exclude": [
     "dist",

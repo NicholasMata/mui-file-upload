@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { FileUpload } from "types";
-import { FileUploaderObservers } from "./useFileUploader";
+import { FileUploaderObservers } from "./types";
+import { FileUpload } from "../types";
 
 export type FileUploadManager<Response = string> = {
   fileUploads: {

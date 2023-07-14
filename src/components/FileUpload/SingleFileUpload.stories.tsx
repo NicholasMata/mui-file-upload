@@ -2,9 +2,7 @@ import { Meta, StoryObj } from "@storybook/react";
 import React, { PropsWithChildren } from "react";
 import { useFakeService } from "../../stories/utils";
 import { SingleFileUpload, SingleFileUploadProps } from ".";
-import { useFileUploaderManager } from "../FileDropzone";
-import { Box, Slide, Stack } from "@mui/material";
-import { FileUploadCard, FileUploadCardActions } from "../FileUploadCard";
+import { useFileUploaderManager } from "../../hooks";
 
 type StoryArgs = PropsWithChildren<
   SingleFileUploadProps & { failureRate: number }
@@ -22,7 +20,7 @@ type Story = StoryObj<StoryType>;
 
 export const Input: Story = (args: StoryArgs) => {
   const uploadService = useFakeService({ failureRate: args.failureRate });
-  const fileManager = useFileUploaderManager<void>();
+  const fileManager = useFileUploaderManager();
   return (
     <SingleFileUpload
       acceptsOnly={args.acceptsOnly}

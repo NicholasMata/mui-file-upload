@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { ReactNode } from "react";
 import { FileUploadUtils, FileUtils } from "../../utils";
-import { FileUpload } from "types";
+import { FileUpload } from "../../types";
 
 export type FileUploadCardProps<FileUploadResponse = string> = {
   /** The icon that will be displayed */
