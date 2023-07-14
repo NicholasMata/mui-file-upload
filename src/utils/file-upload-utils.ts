@@ -1,4 +1,4 @@
-import { FileUpload } from "../components/FileDropzone/hooks";
+import { FileUpload } from "types";
 
 export type FileUploadStatus = "Uploading" | "Failed" | "Completed";
 

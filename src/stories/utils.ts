@@ -1,4 +1,4 @@
-import { FileUploadService } from "../components";
+import { FileUploadService } from "@hooks/useFileUploader";
 
 export type FakeServiceOptions = {
   milliseconds?: number;

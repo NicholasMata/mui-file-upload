@@ -1,16 +1,17 @@
 import { Fade, Box } from "@mui/material";
 import {
   useRejectedFileManager,
-  useFileUploaderManager,
-  useFileUploader,
   FileDropzone,
   FileDropzoneInputBody,
-  FileUploadService,
-  FileUpload,
-  FileUploadManager,
   FileDropzoneInputBodyProps,
 } from "../FileDropzone";
 import { FileUploadResults } from "./FileUploadResults";
+import { FileUploadService, useFileUploader } from "@hooks/useFileUploader";
+import {
+  FileUploadManager,
+  useFileUploaderManager,
+} from "@hooks/useFileUploaderManager";
+import { FileUpload } from "types";
 
 export type SingleFileUploadProps<Response = string> = {
   uploadService: FileUploadService<Response>;

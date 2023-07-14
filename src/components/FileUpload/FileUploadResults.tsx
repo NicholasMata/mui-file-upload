@@ -1,8 +1,8 @@
 import { Box, Fade, Grow, Stack, StackProps } from "@mui/material";
 import { FileUploadCard, FileUploadCardActions } from "../FileUploadCard";
 import { RejectedFileUploadAlert } from "../RejectedFileUploadAlert";
-import { FileUpload } from "../FileDropzone";
 import { forwardRef } from "react";
+import { FileUpload } from "types";
 
 type Props = {
   rejected: File[];

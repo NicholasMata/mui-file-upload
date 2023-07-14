@@ -1,14 +1,13 @@
 import { Stack, Box, Grow, Slide } from "@mui/material";
-import {
-  useFileUploader,
-  FileDropzone,
-  FileUploadService,
-  useRejectedFileManager,
-  FileDropzoneBody,
-  useFileUploaderManager,
-} from "../FileDropzone";
 import { FileUploadCard, FileUploadCardActions } from "../FileUploadCard";
 import { RejectedFileUploadAlert } from "../RejectedFileUploadAlert";
+import { FileUploadService, useFileUploader } from "@hooks/useFileUploader";
+import { useFileUploaderManager } from "@hooks/useFileUploaderManager";
+import {
+  useRejectedFileManager,
+  FileDropzone,
+  FileDropzoneBody,
+} from "@components/FileDropzone";
 
 export type MultiFileUploadProps<Response = string> = {
   uploadService: FileUploadService<Response>;

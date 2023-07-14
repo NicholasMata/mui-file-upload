@@ -19,9 +19,9 @@ yarn install --save mui-file-upload
 
 Currently the package isn't a simple component. It is consists of multiple components you can put together to build a custom file upload experience. Please view the storybook for some real world components.
 
-![FileDropZone Sample](./sample_pics/FileDropzone.png)
+![Multi File Upload Screenshot](sample_pics/FileDropzone.png)
 
-![FileDropZoneInput  Sample](./sample_pics/FileDropzone%20Input.png)
+![Single File Upload  Screenshot](sample_pics/FileDropzone%20Input.png)
 
 ## High customizable
 
