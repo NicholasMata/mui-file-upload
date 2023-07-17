@@ -72,7 +72,7 @@ export const FileDropzoneBody = (props: FileDropzoneBodyProps) => {
           titleColor: "error",
         };
     }
-  }, [status]);
+  }, [status, normalTitle, dropTitle, fileOverloadTitle, dragRejectedTitle]);
   return (
     <Stack spacing={2} padding={5} alignItems="center">
       <Stack>

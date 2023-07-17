@@ -5,8 +5,13 @@ import {
   FileDropzoneInputBody,
 } from "../FileDropzone";
 import { FileUploadResults } from "./FileUploadResults";
-import { useFileUploaderManager, useFileUploader } from "../../hooks";
+import {
+  useFileUploaderManager,
+  useFileUploader,
+  FileUploaderObservers,
+} from "../../hooks";
 import { BaseFileUploadProps } from "./types";
+import { useMemo } from "react";
 
 export type SingleFileUploadProps<Response = string> =
   BaseFileUploadProps<Response>;
@@ -26,14 +31,18 @@ export const SingleFileUpload = <Response = string,>(
 
   const { fileUploads, removeFileUpload, handlers } =
     fileManager ?? useFileUploaderManager<Response>();
-  const { upload } = useFileUploader(uploadService, {
-    onFileUploadStart: handlers.onFileUploadStart,
-    onFileProgressUpdate: handlers.onFileProgressUpdate,
-    onFileUploadComplete: (fu) => {
-      onSuccessfulUpload?.(fu);
-      handlers.onFileUploadComplete(fu);
-    },
-  });
+  const mergedObservers = useMemo(
+    (): FileUploaderObservers<Response> => ({
+      onFileUploadStart: handlers.onFileUploadStart,
+      onFileProgressUpdate: handlers.onFileProgressUpdate,
+      onFileUploadComplete: (fu) => {
+        onSuccessfulUpload?.(fu);
+        handlers.onFileUploadComplete(fu);
+      },
+    }),
+    [handlers, onSuccessfulUpload]
+  );
+  const { upload } = useFileUploader(uploadService, mergedObservers);
 
   const hasFiles = rejectedFiles.length + fileUploads.length > 0;
 

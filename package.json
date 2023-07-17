@@ -1,6 +1,6 @@
 {
   "name": "mui-file-upload",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "A library of components that are related to file uploads built on top of MUI",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",

@@ -38,7 +38,7 @@ export const FileDropzoneInputBody = (props: FileDropzoneInputBodyProps) => {
     () => FileDropzoneStatusUtils.getInfo(dropzoneState),
     [dropzoneState]
   );
-  console.log("render");
+
   return (
     <Typography
       paddingX={2}

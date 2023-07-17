@@ -11,9 +11,9 @@ export interface MimeType {
 export class AcceptUtils {
   /**
    * NOTE: Issue with mime-db doesn't line up with input tag when provided mime types.
-   * 
+   *
    * Get all mime type present in an accept string which is comma separate.
-   * 
+   *
    * This also supports file extensions as well.
    * @param accepts An accepts string to get mime types from. i.e. "application/pdf,application/json", ".pdf,.json"
    * @returns An array of mime types parse from accepts string.
@@ -53,7 +53,6 @@ export class Accept {
   constructor(accepts: string) {
     this.accepts = accepts;
     this.mimeTypes = AcceptUtils.getMimeTypes(accepts);
-    console.log(this.mimeTypes);
   }
   /**
    * Parses out the include accept strings from accepts string.

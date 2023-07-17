@@ -1,5 +1,9 @@
 import { Stack } from "@mui/material";
-import { useFileUploaderManager, useFileUploader } from "../../hooks";
+import {
+  useFileUploaderManager,
+  useFileUploader,
+  FileUploaderObservers,
+} from "../../hooks";
 import {
   useRejectedFileManager,
   FileDropzone,
@@ -7,6 +11,7 @@ import {
 } from "../FileDropzone";
 import { BaseFileUploadProps } from "./types";
 import { FileUploadResults } from "./FileUploadResults";
+import { useMemo } from "react";
 
 export type MultiFileUploadProps<Response = string> =
   BaseFileUploadProps<Response>;
@@ -25,14 +30,18 @@ export const MultiFileUpload = <Response = string,>(
 
   const { fileUploads, removeFileUpload, handlers } =
     fileManager ?? useFileUploaderManager<Response>();
-  const { upload } = useFileUploader(uploadService, {
-    onFileUploadStart: handlers.onFileUploadStart,
-    onFileProgressUpdate: handlers.onFileProgressUpdate,
-    onFileUploadComplete: (fu) => {
-      onSuccessfulUpload?.(fu);
-      handlers.onFileUploadComplete(fu);
-    },
-  });
+  const mergedObservers = useMemo(
+    (): FileUploaderObservers<Response> => ({
+      onFileUploadStart: handlers.onFileUploadStart,
+      onFileProgressUpdate: handlers.onFileProgressUpdate,
+      onFileUploadComplete: (fu) => {
+        onSuccessfulUpload?.(fu);
+        handlers.onFileUploadComplete(fu);
+      },
+    }),
+    [handlers, onSuccessfulUpload]
+  );
+  const { upload } = useFileUploader(uploadService, mergedObservers);
 
   return (
     <Stack spacing={2}>
