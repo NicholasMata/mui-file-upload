@@ -3,6 +3,7 @@ import {
   ChangeEventHandler,
   DragEventHandler,
   PropsWithChildren,
+  useCallback,
   useMemo,
   useRef,
   useState,
@@ -19,7 +20,7 @@ export type FileDropzoneProps = {
   /** The system prop that allows defining system overrides as well as additional CSS styles. */
   sx?: SxProps<Theme>;
   /** The drag zone system prop that allows defining system overrides as well as additional CSS styles. */
-  dragZoneSx?: SxProps<Theme>;
+  dragZoneSx?: (state: FileDropzoneState) => SxProps<Theme>;
   /** The drop zone system prop that allows defining system overrides as well as additional CSS styles. */
   dropZoneSx?: SxProps<Theme>;
   /** Called when dropzone accepts valid files. */
@@ -29,11 +30,15 @@ export type FileDropzoneProps = {
 };
 
 const defaultSx: SxProps<Theme> = {
+  display: 'flex',
+  flexDirection: 'column',
   textAlign: "center",
 };
+
 const requiredDefaultSx: SxProps<Theme> = {
   position: "relative",
 };
+
 const dragActiveSx: SxProps<Theme> = (t) => ({
   borderColor: t.palette.primary.main,
   backgroundColor: alpha(t.palette.primary.main, 0.1),
@@ -60,15 +65,18 @@ const defaultDragZoneOverloadSx: SxProps<Theme> = (t) => ({
   backgroundColor: alpha(t.palette.error.main, 0.03),
 });
 
-const defaultDropZoneSx: SxProps<Theme> = {
+const requiredDefaultDropZoneSx: SxProps<Theme> = {
   position: "absolute",
   width: "100%",
   height: "100%",
-  borderRadius: "1rem",
   top: "0px",
   right: "0px",
   bottom: "0px",
   left: "0px",
+}
+
+const defaultDropZoneSx: SxProps<Theme> = {
+  borderRadius: "1rem",
 };
 
 const defaultFileDropzoneState = { hasTooManyFiles: false };
@@ -94,7 +102,7 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleDrag: DragEventHandler<HTMLElement> = function (e) {
+  const handleDrag: DragEventHandler<HTMLElement> = function(e) {
     e.preventDefault();
     e.stopPropagation();
     if (e.type === "dragenter" || e.type === "dragover") {
@@ -118,7 +126,7 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
     }
   };
 
-  const handleDrop: DragEventHandler<HTMLElement> = function (e) {
+  const handleDrop: DragEventHandler<HTMLElement> = function(e) {
     e.preventDefault();
     e.stopPropagation();
     if (e.dataTransfer.files.length === 0) {
@@ -128,7 +136,7 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
     handleFiles(e.dataTransfer.files);
   };
 
-  const handleChange: ChangeEventHandler<HTMLInputElement> = function (e) {
+  const handleChange: ChangeEventHandler<HTMLInputElement> = function(e) {
     e.preventDefault();
     if (e.target.files && e.target.files[0]) {
       handleFiles(e.target.files);
@@ -173,9 +181,21 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
     }, 500);
   };
 
-  const openFileSelector = () => {
+  const openFileSelector = useCallback(() => {
     inputRef.current?.click();
-  };
+  }, [inputRef.current]);
+
+  const contextValue = useMemo(
+    () => ({
+      dropzoneState: state,
+      openFileSelector,
+      accept,
+      allowsMultiple,
+    }),
+    [state, openFileSelector, accept, allowsMultiple]
+  );
+
+  const customDragZoneSx = useMemo(() => dragZoneSx ? dragZoneSx(state) : null, [state, dragZoneSx]);
 
   return (
     <Box
@@ -200,18 +220,11 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
           defaultDragZoneSx,
           state.dragActive ? dragActiveSx : null,
           state.dragActive?.hasRejectedFiles ? dragActiveRejectedSx : null,
-          ...(Array.isArray(dragZoneSx) ? dragZoneSx : [dragZoneSx]),
+          ...(Array.isArray(customDragZoneSx) ? customDragZoneSx : [customDragZoneSx]),
           state.hasTooManyFiles ? defaultDragZoneOverloadSx : null,
         ]}
       >
-        <FileDropzoneProvider
-          value={{
-            dropzoneState: state,
-            openFileSelector,
-            accept,
-            allowsMultiple,
-          }}
-        >
+        <FileDropzoneProvider value={contextValue}>
           {children}
         </FileDropzoneProvider>
       </Box>
@@ -220,6 +233,7 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
           sx={[
             defaultDropZoneSx,
             ...(Array.isArray(dropZoneSx) ? dropZoneSx : [dropZoneSx]),
+            requiredDefaultDropZoneSx,
           ]}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}

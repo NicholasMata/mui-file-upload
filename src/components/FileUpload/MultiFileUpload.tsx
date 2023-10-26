@@ -15,16 +15,12 @@ import { useMemo } from "react";
 
 export type MultiFileUploadProps<Response = string> =
   BaseFileUploadProps<Response>;
+
 export const MultiFileUpload = <Response = string,>(
   props: MultiFileUploadProps<Response>
 ) => {
-  const {
-    uploadService,
-    acceptsOnly,
-    onSuccessfulUpload,
-    fileManager,
-    body = <FileDropzoneBody />,
-  } = props;
+  const { uploadService, acceptsOnly, onSuccessfulUpload, fileManager, body, sx } =
+    props;
   const { rejectedFiles, addRejected, removeRejected } =
     useRejectedFileManager();
 
@@ -43,14 +39,19 @@ export const MultiFileUpload = <Response = string,>(
   );
   const { upload } = useFileUploader(uploadService, mergedObservers);
 
+  const memoizedBody = useMemo(() => body ?? <FileDropzoneBody />, [body]);
+
   return (
     <Stack spacing={2}>
       <FileDropzone
+        sx={sx?.sx}
+        dragZoneSx={sx?.dragZoneSx}
+        dropZoneSx={sx?.dropZoneSx}
         onFilesAccepted={upload}
         onFilesRejected={addRejected}
         acceptsOnly={acceptsOnly}
       >
-        {body}
+        {memoizedBody}
       </FileDropzone>
       <FileUploadResults
         rejected={rejectedFiles}

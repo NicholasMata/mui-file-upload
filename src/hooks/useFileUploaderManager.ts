@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { FileUploaderObservers } from "./types";
 import { FileUpload } from "../types";
 
@@ -22,21 +22,24 @@ export const useFileUploaderManager = <
   const successful = fileUploads.filter((fu) => fu.completed && !fu.failed);
   const failed = fileUploads.filter((fu) => fu.completed && fu.failed);
 
-  const handlers: FileUploaderObservers<Response> = {
-    onFileUploadStart: (fileUpload, isRetry) => {
-      if (isRetry) {
-        setFileUploads(update(fileUpload));
-      } else {
-        setFileUploads(append(fileUpload));
-      }
-    },
-    onFileProgressUpdate: (updatedFileUpload) => {
-      setFileUploads(update(updatedFileUpload));
-    },
-    onFileUploadComplete: (completedFileUpload) => {
-      setFileUploads(update(completedFileUpload));
-    },
-  };
+  const handlers: FileUploaderObservers<Response> = useMemo(
+    () => ({
+      onFileUploadStart: (fileUpload, isRetry) => {
+        if (isRetry) {
+          setFileUploads(update(fileUpload));
+        } else {
+          setFileUploads(append(fileUpload));
+        }
+      },
+      onFileProgressUpdate: (updatedFileUpload) => {
+        setFileUploads(update(updatedFileUpload));
+      },
+      onFileUploadComplete: (completedFileUpload) => {
+        setFileUploads(update(completedFileUpload));
+      },
+    }),
+    [setFileUploads, append, update]
+  );
 
   const removeFileUpload = (fileUploadToRemove: FileUpload<Response>) => {
     setFileUploads(remove(fileUploadToRemove));

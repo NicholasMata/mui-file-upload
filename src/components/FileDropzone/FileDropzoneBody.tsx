@@ -4,7 +4,7 @@ import {
   TaskTwoTone,
   UploadFileTwoTone,
 } from "@mui/icons-material";
-import { AcceptUtils, FileDropzoneStatusUtils } from "../../utils";
+import { FileDropzoneStatusUtils } from "../../utils";
 import { useFileDropzoneContext } from "./hooks";
 import { ReactNode, useMemo } from "react";
 import {
@@ -20,7 +20,7 @@ export type FileDropzoneBodyProps = {
   title?: ReactNode;
   /**
    * The title of the zone that will be displayed when something can be dropped on it.
-   * */
+   */
   dropTitle?: ReactNode;
   /** The title when the there are not many files in the dropzone. */
   fileOverloadTitle?: ReactNode;
@@ -45,6 +45,7 @@ export const FileDropzoneBody = (props: FileDropzoneBodyProps) => {
     () => accept?.toString().toLocaleUpperCase(),
     [accept]
   );
+
   const { title, icon, titleColor } = useMemo(() => {
     switch (status) {
       case FileDropzoneStatus.normal:
@@ -73,8 +74,9 @@ export const FileDropzoneBody = (props: FileDropzoneBodyProps) => {
         };
     }
   }, [status, normalTitle, dropTitle, fileOverloadTitle, dragRejectedTitle]);
+
   return (
-    <Stack spacing={2} padding={5} alignItems="center">
+    <Stack spacing={2} padding={5} alignItems="center" justifyContent="center">
       <Stack>
         <Typography variant="h3">{icon}</Typography>
         <Typography color={titleColor}>{title}</Typography>

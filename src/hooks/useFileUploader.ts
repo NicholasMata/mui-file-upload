@@ -57,7 +57,12 @@ export const useFileUploader = <Response = string>(
         .catch(() => handleCompletion(true));
       onFileUploadStart(fileUpload, isRetry);
     },
-    [networkService, observers]
+    [
+      networkService,
+      onFileUploadStart,
+      onFileProgressUpdate,
+      onFileUploadComplete,
+    ]
   );
 
   const upload = useCallback(

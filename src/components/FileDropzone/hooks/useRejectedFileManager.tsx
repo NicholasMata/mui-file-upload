@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 type RejectedFileManager = {
   /** An array of files that have been rejected and should not be uploaded. */
@@ -11,12 +11,18 @@ type RejectedFileManager = {
 export const useRejectedFileManager = (): RejectedFileManager => {
   const [rejectedFiles, setRejectedFiles] = useState<File[]>([]);
 
-  const addRejected = (files: File | File[]) => {
-    setRejectedFiles(append(files));
-  };
-  const removeRejected = (file: File | File[]) => {
-    setRejectedFiles(remove(file));
-  };
+  const addRejected = useCallback(
+    (files: File | File[]) => {
+      setRejectedFiles(append(files));
+    },
+    [setRejectedFiles, append]
+  );
+  const removeRejected = useCallback(
+    (file: File | File[]) => {
+      setRejectedFiles(remove(file));
+    },
+    [setRejectedFiles, remove]
+  );
   return {
     rejectedFiles,
     addRejected,

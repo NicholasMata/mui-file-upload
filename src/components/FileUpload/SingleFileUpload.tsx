@@ -25,6 +25,7 @@ export const SingleFileUpload = <Response = string,>(
     onSuccessfulUpload,
     fileManager,
     body = <FileDropzoneInputBody />,
+    sx
   } = props;
   const { rejectedFiles, addRejected, removeRejected } =
     useRejectedFileManager();
@@ -60,9 +61,10 @@ export const SingleFileUpload = <Response = string,>(
       >
         <Box flexGrow={1}>
           <FileDropzone
+            sx={sx?.sx}
             allowsMultiple={false}
-            dragZoneSx={{ borderRadius: "5px" }}
-            dropZoneSx={{ borderRadius: "5px" }}
+            dragZoneSx={sx ? sx.dragZoneSx : () => ({ borderRadius: "5px" })}
+            dropZoneSx={sx ? sx.dropZoneSx : { borderRadius: "5px" }}
             onFilesAccepted={upload}
             onFilesRejected={addRejected}
             acceptsOnly={acceptsOnly}
