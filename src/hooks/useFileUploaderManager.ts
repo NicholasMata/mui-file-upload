@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
-import { FileUploaderObservers } from "./types";
-import { FileUpload } from "../types";
+import { useMemo, useState } from 'react';
+import { FileUploaderObservers } from './types';
+import { FileUpload } from '../types';
 
 export type FileUploadManager<Response = string> = {
   fileUploads: {
@@ -13,9 +13,7 @@ export type FileUploadManager<Response = string> = {
   handlers: FileUploaderObservers<Response>;
 };
 
-export const useFileUploaderManager = <
-  Response = string
->(): FileUploadManager<Response> => {
+export const useFileUploaderManager = <Response = string>(): FileUploadManager<Response> => {
   const [fileUploads, setFileUploads] = useState<FileUpload<Response>[]>([]);
 
   const inProgress = fileUploads.filter((fu) => !fu.completed);
@@ -57,16 +55,14 @@ export const useFileUploaderManager = <
   };
 };
 
-function remove(fileToRemove: FileUpload<any>) {
-  return (prev: FileUpload<any>[]) =>
-    prev.filter((p) => p.id !== fileToRemove.id);
+function remove<Response = unknown>(fileToRemove: FileUpload<Response>) {
+  return (prev: FileUpload<Response>[]) => prev.filter((p) => p.id !== fileToRemove.id);
 }
 
-function update(fileToUpdate: FileUpload<any>) {
-  return (prev: FileUpload<any>[]) =>
-    prev.map((p) => (p.id === fileToUpdate.id ? fileToUpdate : p));
+function update<Response = unknown>(fileToUpdate: FileUpload<Response>) {
+  return (prev: FileUpload<Response>[]) => prev.map((p) => (p.id === fileToUpdate.id ? fileToUpdate : p));
 }
 
-function append(fileToAppend: FileUpload<any>) {
-  return (prev: FileUpload<any>[]) => [...prev, fileToAppend];
+function append<Response = unknown>(fileToAppend: FileUpload<Response>) {
+  return (prev: FileUpload<Response>[]) => [...prev, fileToAppend];
 }

@@ -3,6 +3,7 @@ export type FileDropzoneDragActive = {
 };
 
 export type FileDropzoneState = {
+  disabled: boolean;
   dragActive?: FileDropzoneDragActive;
   hasTooManyFiles: boolean;
 };
@@ -12,4 +13,5 @@ export enum FileDropzoneStatus {
   dragActive,
   overloaded,
   dragRejected,
+  disabled,
 }

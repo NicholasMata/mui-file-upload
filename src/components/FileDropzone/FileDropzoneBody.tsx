@@ -1,19 +1,16 @@
-import { Box, Button, Divider, Stack, Typography } from "@mui/material";
-import {
-  AssignmentLate,
-  TaskTwoTone,
-  UploadFileTwoTone,
-} from "@mui/icons-material";
-import { FileDropzoneStatusUtils } from "../../utils";
-import { useFileDropzoneContext } from "./hooks";
-import { ReactNode, useMemo } from "react";
+import { Box, Button, Divider, Stack, Typography } from '@mui/material';
+import { AssignmentLate, TaskTwoTone, UploadFileTwoTone } from '@mui/icons-material';
+import { FileDropzoneStatusUtils } from '../../utils';
+import { useFileDropzoneContext } from './hooks';
+import { ReactNode, useMemo } from 'react';
 import {
   DEFAULT_FILE_DRAG_REJECTED_TITLE,
+  DEFAULT_FILE_DROPZONE_DISABLED,
   DEFAULT_FILE_OVERLOAD_TITLE,
   getDefaultBodyTitle,
   getDefaultDropBodyTitle,
-} from "./contants";
-import { FileDropzoneStatus } from "./types";
+} from './contants';
+import { FileDropzoneStatus } from './types';
 
 export type FileDropzoneBodyProps = {
   /** The title of the zone. */
@@ -26,74 +23,81 @@ export type FileDropzoneBodyProps = {
   fileOverloadTitle?: ReactNode;
   /** The title when invalid file types are being dragged over the zone. */
   dragRejectedTitle?: ReactNode;
+  /** The title when the dropzone is disabled */
+  disabledTitle?: ReactNode | ((dragActive: boolean) => ReactNode);
 };
 
 export const FileDropzoneBody = (props: FileDropzoneBodyProps) => {
-  const { dropzoneState, openFileSelector, accept, allowsMultiple } =
-    useFileDropzoneContext();
+  const { dropzoneState, openFileSelector, accept, allowsMultiple } = useFileDropzoneContext();
+  const { disabled } = dropzoneState;
 
   const {
     title: normalTitle = getDefaultBodyTitle(allowsMultiple),
     dropTitle = getDefaultDropBodyTitle(allowsMultiple),
     fileOverloadTitle = DEFAULT_FILE_OVERLOAD_TITLE,
     dragRejectedTitle = DEFAULT_FILE_DRAG_REJECTED_TITLE,
+    disabledTitle: disabledTitleFn = DEFAULT_FILE_DROPZONE_DISABLED,
   } = props;
 
-  const { status } = FileDropzoneStatusUtils.getInfo(dropzoneState);
-
-  const acceptsFile = useMemo(
-    () => accept?.toString().toLocaleUpperCase(),
-    [accept]
+  const disabledTitle = useMemo(
+    () => (typeof disabledTitleFn == 'function' ? disabledTitleFn(!!dropzoneState.dragActive) : disabledTitleFn),
+    [dropzoneState.dragActive, disabledTitleFn]
   );
+
+  const { status, isError } = useMemo(() => FileDropzoneStatusUtils.getInfo(dropzoneState), [dropzoneState]);
+
+  const acceptsFile = useMemo(() => accept?.toString().toLocaleUpperCase(), [accept]);
 
   const { title, icon, titleColor } = useMemo(() => {
     switch (status) {
       case FileDropzoneStatus.normal:
         return {
           title: normalTitle,
-          icon: <UploadFileTwoTone fontSize="inherit" color="primary" />,
-          titleColor: "text.primary",
+          icon: <UploadFileTwoTone fontSize='inherit' color='primary' />,
+          titleColor: 'text.primary',
         };
       case FileDropzoneStatus.dragActive:
         return {
           title: dropTitle,
-          icon: <TaskTwoTone fontSize="inherit" color="primary" />,
-          titleColor: "primary",
+          icon: <TaskTwoTone fontSize='inherit' color='primary' />,
+          titleColor: 'primary',
         };
       case FileDropzoneStatus.overloaded:
         return {
           title: fileOverloadTitle,
-          icon: <AssignmentLate fontSize="inherit" color="error" />,
-          titleColor: "error",
+          icon: <AssignmentLate fontSize='inherit' color='error' />,
+          titleColor: 'error',
         };
       case FileDropzoneStatus.dragRejected:
         return {
           title: dragRejectedTitle,
-          icon: <AssignmentLate fontSize="inherit" color="error" />,
-          titleColor: "error",
+          icon: <AssignmentLate fontSize='inherit' color='error' />,
+          titleColor: 'error',
+        };
+      case FileDropzoneStatus.disabled:
+        return {
+          title: disabledTitle,
+          icon: <UploadFileTwoTone fontSize='inherit' sx={{ color: 'text.disabled' }} />,
+          titleColor: 'text.disabled',
         };
     }
-  }, [status, normalTitle, dropTitle, fileOverloadTitle, dragRejectedTitle]);
+  }, [status, normalTitle, dropTitle, fileOverloadTitle, dragRejectedTitle, disabledTitle]);
 
   return (
-    <Stack spacing={2} padding={5} alignItems="center" justifyContent="center">
+    <Stack spacing={2} padding={5} alignItems='center' justifyContent='center'>
       <Stack>
-        <Typography variant="h3">{icon}</Typography>
+        <Typography variant='h3'>{icon}</Typography>
         <Typography color={titleColor}>{title}</Typography>
         {acceptsFile && (
           <Box>
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              display="inline-block"
-            >
+            <Typography variant='caption' color='text.secondary' display='inline-block'>
               Supports:
             </Typography>
             <Typography
-              variant="caption"
+              variant='caption'
               fontWeight={700}
-              color="text.secondary"
-              display="inline-block"
+              color='text.secondary'
+              display='inline-block'
               sx={{ mx: 0.5 }}
             >
               {acceptsFile}
@@ -102,20 +106,16 @@ export const FileDropzoneBody = (props: FileDropzoneBodyProps) => {
         )}
       </Stack>
       <Divider
-        sx={{
-          width: "80%",
+        sx={(t) => ({
+          width: '80%',
           [`&::before, &::after`]: {
-            border: "0.1px solid gray",
+            border: disabled ? `0.1px solid ${t.palette.text.disabled}` : '0.1px solid gray',
           },
-        }}
+        })}
       >
-        <Typography color="text.primary">OR</Typography>
+        <Typography color={disabled ? 'text.disabled' : 'text.primary'}>OR</Typography>
       </Divider>
-      <Button
-        variant="outlined"
-        onClick={openFileSelector}
-        className="upload-button"
-      >
+      <Button disabled={disabled} variant='outlined' color={isError ? "error" : undefined} onClick={openFileSelector} className='upload-button'>
         Browse files
       </Button>
     </Stack>

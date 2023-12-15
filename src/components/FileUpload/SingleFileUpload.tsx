@@ -1,37 +1,25 @@
-import { Fade, Box } from "@mui/material";
-import {
-  useRejectedFileManager,
-  FileDropzone,
-  FileDropzoneInputBody,
-} from "../FileDropzone";
-import { FileUploadResults } from "./FileUploadResults";
-import {
-  useFileUploaderManager,
-  useFileUploader,
-  FileUploaderObservers,
-} from "../../hooks";
-import { BaseFileUploadProps } from "./types";
-import { useMemo } from "react";
+import { Fade, Box } from '@mui/material';
+import { useRejectedFileManager, FileDropzone, FileDropzoneInputBody } from '../FileDropzone';
+import { FileUploadResults } from './FileUploadResults';
+import { useFileUploaderManager, useFileUploader, FileUploaderObservers } from '../../hooks';
+import { BaseFileUploadProps } from './types';
+import { useMemo } from 'react';
 
-export type SingleFileUploadProps<Response = string> =
-  BaseFileUploadProps<Response>;
+export type SingleFileUploadProps<Response = string> = BaseFileUploadProps<Response>;
 
-export const SingleFileUpload = <Response = string,>(
-  props: SingleFileUploadProps<Response>
-) => {
+export const SingleFileUpload = <Response = string,>(props: SingleFileUploadProps<Response>) => {
   const {
     uploadService,
     acceptsOnly,
     onSuccessfulUpload,
     fileManager,
     body = <FileDropzoneInputBody />,
-    sx
+    sx,
+    disabled,
   } = props;
-  const { rejectedFiles, addRejected, removeRejected } =
-    useRejectedFileManager();
+  const { rejectedFiles, addRejected, removeRejected } = useRejectedFileManager();
 
-  const { fileUploads, removeFileUpload, handlers } =
-    fileManager ?? useFileUploaderManager<Response>();
+  const { fileUploads, removeFileUpload, handlers } = fileManager ?? useFileUploaderManager<Response>();
   const mergedObservers = useMemo(
     (): FileUploaderObservers<Response> => ({
       onFileUploadStart: handlers.onFileUploadStart,
@@ -48,7 +36,7 @@ export const SingleFileUpload = <Response = string,>(
   const hasFiles = rejectedFiles.length + fileUploads.length > 0;
 
   return (
-    <Box display="flex" flexDirection="column">
+    <Box display='flex' flexDirection='column'>
       <Fade
         appear={false}
         unmountOnExit
@@ -61,10 +49,11 @@ export const SingleFileUpload = <Response = string,>(
       >
         <Box flexGrow={1}>
           <FileDropzone
+            disabled={disabled}
             sx={sx?.sx}
             allowsMultiple={false}
-            dragZoneSx={sx ? sx.dragZoneSx : () => ({ borderRadius: "5px" })}
-            dropZoneSx={sx ? sx.dropZoneSx : { borderRadius: "5px" }}
+            dragZoneSx={sx ? sx.dragZoneSx : () => ({ borderRadius: '5px' })}
+            dropZoneSx={sx ? sx.dropZoneSx : { borderRadius: '5px' }}
             onFilesAccepted={upload}
             onFilesRejected={addRejected}
             acceptsOnly={acceptsOnly}
@@ -73,7 +62,7 @@ export const SingleFileUpload = <Response = string,>(
           </FileDropzone>
         </Box>
       </Fade>
-      <Fade in={hasFiles} style={{ transitionDelay: "200ms" }}>
+      <Fade in={hasFiles} style={{ transitionDelay: '200ms' }}>
         <FileUploadResults
           rejected={rejectedFiles}
           failed={fileUploads.failed}

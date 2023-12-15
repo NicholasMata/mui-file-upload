@@ -1,129 +1,136 @@
-import { Meta, StoryObj } from "@storybook/react";
-import React, { PropsWithChildren, useMemo } from "react";
-import { useFakeService } from "../../stories/utils";
-import { SingleFileUpload, SingleFileUploadProps } from ".";
-import { useFileUploaderManager } from "../../hooks";
-import { FileDropzoneInputBody, FileDropzoneStatus, useFileDropzoneContext } from "../FileDropzone";
-import { Link, Stack, Typography, alpha } from "@mui/material";
-import { FileDropzoneStatusUtils } from "../../utils";
+import { Meta, StoryObj } from '@storybook/react';
+import React, { ComponentProps, useMemo } from 'react';
+import { useFakeService } from '../../stories/utils';
+import { SingleFileUpload } from '.';
+import { useFileUploaderManager } from '../../hooks';
+import { FileDropzoneInputBody, FileDropzoneStatus, useFileDropzoneContext } from '../FileDropzone';
+import { Link, Stack, Theme, Typography, alpha } from '@mui/material';
+import { FileDropzoneStatusUtils, FileDropzoneUtils } from '../../utils';
+import {
+  DEFAULT_BACKGROUND_ALPHA,
+  DEFAULT_BORDER_ALPHA,
+  DEFAULT_DRAG_ACTIVE_BACKGROUND_ALPHA,
+  DEFAULT_DRAG_ACTIVE_BORDER_ALPHA,
+} from '../FileDropzone/contants';
 
-type StoryArgs = PropsWithChildren<
-  SingleFileUploadProps & { failureRate: number }
->;
-type StoryType = React.FC<StoryArgs>;
-const meta: Meta<StoryType> = {
+type StoryProps = { failureRate: number; title: string; dropTitle: string; disabledTitle: string };
+
+type AllProps = ComponentProps<typeof SingleFileUpload<string>> & StoryProps;
+
+const meta: Meta<AllProps> = {
   component: SingleFileUpload,
-  title: "SingleFileUpload",
-  tags: ["autodocs"],
+  title: 'SingleFileUpload',
+  tags: ['autodocs'],
+  args: {
+    failureRate: 0.1,
+  },
+  argTypes: {
+    uploadService: { table: { disable: true } },
+    onSuccessfulUpload: { table: { disable: true } },
+    fileManager: { table: { disable: true } },
+    body: { table: { disable: true } },
+    sx: { table: { disable: true } },
+  },
 };
 
 export default meta;
 
-type Story = StoryObj<StoryType>;
+type Story = StoryObj<AllProps>;
 
-export const Default: Story = (args: StoryArgs) => {
-  const uploadService = useFakeService({ failureRate: args.failureRate });
-  const fileManager = useFileUploaderManager<void>();
-  return (
-    <SingleFileUpload
-      acceptsOnly={args.acceptsOnly}
-      uploadService={uploadService}
-      fileManager={fileManager}
-    />
-  );
+export const Default: Story = {
+  render: (args) => {
+    const uploadService = useFakeService({ failureRate: args.failureRate });
+    const fileManager = useFileUploaderManager<void>();
+    return (
+      <Stack alignItems='start'>
+        <SingleFileUpload
+          disabled={args.disabled}
+          acceptsOnly={args.acceptsOnly}
+          uploadService={uploadService}
+          fileManager={fileManager}
+        />
+      </Stack>
+    );
+  },
 };
 
-Default.parameters = {
-  controls: { exclude: /^(?!failureRate$).*$/g }
-}
+export const CustomTitle: Story = {
+  args: {
+    title: 'Custom Title Text',
+    dropTitle: 'Custom Drop Text',
+    disabledTitle: 'Custom Disabled Text',
+  },
 
-Default.args = {
-  failureRate: 0.1,
-};
-
-Default.argTypes = {
-  failureRate: { control: { type: "number", min: 0, max: 1, step: 0.01 } },
-};
-
-
-export const CustomTitle: Story = (args: StoryArgs) => {
-  const uploadService = useFakeService({ failureRate: args.failureRate });
-  const fileManager = useFileUploaderManager<void>();
-  return (
-    <SingleFileUpload
-      sx={{ dragZoneSx: () => ({ borderStyle: 'solid', borderWidth: 1, borderRadius: 0 }) }}
-      body={<FileDropzoneInputBody title="Custom text here" dropTitle="Custom drop text here" />}
-      acceptsOnly={args.acceptsOnly}
-      uploadService={uploadService}
-      fileManager={fileManager}
-    />
-  );
-};
-
-CustomTitle.parameters = {
-  controls: { exclude: /^(?!failureRate$).*$/g }
-}
-
-CustomTitle.args = {
-  failureRate: 0.1,
-};
-
-CustomTitle.argTypes = {
-  failureRate: { control: { type: "number", min: 0, max: 1, step: 0.01 } },
+  render: (args) => {
+    const uploadService = useFakeService({ failureRate: args.failureRate });
+    const fileManager = useFileUploaderManager<void>();
+    return (
+      <SingleFileUpload
+        disabled={args.disabled}
+        sx={{ dragZoneSx: () => ({ borderStyle: 'solid', borderWidth: 1, borderRadius: 0 }) }}
+        body={
+          <FileDropzoneInputBody
+            title='Custom text here'
+            dropTitle='Custom drop text here'
+            disabledTitle='Custom disabled text here'
+          />
+        }
+        acceptsOnly={args.acceptsOnly}
+        uploadService={uploadService}
+        fileManager={fileManager}
+      />
+    );
+  },
 };
 
 const CustomZoneBody = () => {
-  const { dropzoneState, openFileSelector } = useFileDropzoneContext()
+  const { dropzoneState, openFileSelector } = useFileDropzoneContext();
+  const { disabled } = dropzoneState;
+  const { status, isError } = useMemo(() => FileDropzoneStatusUtils.getInfo(dropzoneState), [dropzoneState]);
 
-  const { status, isError } = useMemo(
-    () => FileDropzoneStatusUtils.getInfo(dropzoneState),
-    [dropzoneState]
-  );
-
-  return <Typography
-    paddingX={2}
-    paddingY={1}
-    color={isError ? "error" : "inherit"}
-    minWidth={"400px"}
-  >
-    {status == FileDropzoneStatus.overloaded && 'Custom Overloaded Body'}
-    {status == FileDropzoneStatus.dragRejected && 'Custom Drag Rejected'}
-    {!isError && (
-      <>
-        <Link onClick={openFileSelector}>Custom Open File Browser</Link>{" "}
-        {status == FileDropzoneStatus.dragActive ? 'Custom Drop Text' : 'Custom Text Here'}
-      </>
-    )}
-  </Typography>
-}
-
-export const CustomBody: Story = (args: StoryArgs) => {
-  const uploadService = useFakeService({ failureRate: args.failureRate });
-  const fileManager = useFileUploaderManager<void>();
   return (
-    <SingleFileUpload
-      body={<CustomZoneBody />}
-      acceptsOnly={args.acceptsOnly}
-      uploadService={uploadService}
-      fileManager={fileManager}
-      sx={{
-        dragZoneSx: (state) => (t) => ({
-          backgroundColor: alpha(t.palette.secondary.main, state.dragActive ? 0.1 : 0.03),
-          borderColor: alpha(t.palette.secondary.main, state.dragActive ? 1 : 0.5)
-        }),
-      }}
-    />
+    <Typography paddingX={2} paddingY={1} color={isError ? 'error' : 'inherit'} minWidth={'400px'}>
+      {status == FileDropzoneStatus.overloaded && 'Custom Overloaded Body'}
+      {status == FileDropzoneStatus.dragRejected && 'Custom Drag Rejected'}
+      {status == FileDropzoneStatus.disabled && 'Custom Disabled'}
+      {!isError && !disabled && (
+        <>
+          <Link onClick={openFileSelector}>Custom Open File Browser</Link>{' '}
+          {status == FileDropzoneStatus.dragActive ? 'Custom Drop Text' : 'Custom Text Here'}
+        </>
+      )}
+    </Typography>
   );
 };
 
-CustomBody.parameters = {
-  controls: { exclude: /^(?!failureRate$).*$/g }
-}
-
-CustomBody.args = {
-  failureRate: 0.1,
-};
-
-CustomBody.argTypes = {
-  failureRate: { control: { type: "number", min: 0, max: 1, step: 0.01 } },
+export const CustomBody: Story = {
+  render: (args) => {
+    const uploadService = useFakeService({ failureRate: args.failureRate });
+    const fileManager = useFileUploaderManager<void>();
+    const backgroundColor = (t: Theme) => ({
+      default: alpha(t.palette.secondary.main, DEFAULT_BACKGROUND_ALPHA),
+      disabled: alpha(t.palette.text.disabled, DEFAULT_BACKGROUND_ALPHA),
+      dragActive: alpha(t.palette.secondary.main, DEFAULT_DRAG_ACTIVE_BACKGROUND_ALPHA),
+    });
+    const borderColor = (t: Theme) => ({
+      default: alpha(t.palette.secondary.main, DEFAULT_BORDER_ALPHA),
+      disabled: alpha(t.palette.text.disabled, DEFAULT_BORDER_ALPHA),
+      dragActive: alpha(t.palette.secondary.main, DEFAULT_DRAG_ACTIVE_BORDER_ALPHA),
+    });
+    return (
+      <SingleFileUpload
+        disabled={args.disabled}
+        body={<CustomZoneBody />}
+        acceptsOnly={args.acceptsOnly}
+        uploadService={uploadService}
+        fileManager={fileManager}
+        sx={{
+          dragZoneSx: (state) => (t) => ({
+            backgroundColor: FileDropzoneUtils.selectColor(state, backgroundColor(t)),
+            borderColor: FileDropzoneUtils.selectColor(state, borderColor(t)),
+          }),
+        }}
+      />
+    );
+  },
 };

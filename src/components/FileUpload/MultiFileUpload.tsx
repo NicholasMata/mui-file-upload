@@ -1,31 +1,17 @@
-import { Stack } from "@mui/material";
-import {
-  useFileUploaderManager,
-  useFileUploader,
-  FileUploaderObservers,
-} from "../../hooks";
-import {
-  useRejectedFileManager,
-  FileDropzone,
-  FileDropzoneBody,
-} from "../FileDropzone";
-import { BaseFileUploadProps } from "./types";
-import { FileUploadResults } from "./FileUploadResults";
-import { useMemo } from "react";
+import { Stack } from '@mui/material';
+import { useFileUploaderManager, useFileUploader, FileUploaderObservers } from '../../hooks';
+import { useRejectedFileManager, FileDropzone, FileDropzoneBody } from '../FileDropzone';
+import { BaseFileUploadProps } from './types';
+import { FileUploadResults } from './FileUploadResults';
+import { useMemo } from 'react';
 
-export type MultiFileUploadProps<Response = string> =
-  BaseFileUploadProps<Response>;
+export type MultiFileUploadProps<Response = string> = BaseFileUploadProps<Response>;
 
-export const MultiFileUpload = <Response = string,>(
-  props: MultiFileUploadProps<Response>
-) => {
-  const { uploadService, acceptsOnly, onSuccessfulUpload, fileManager, body, sx } =
-    props;
-  const { rejectedFiles, addRejected, removeRejected } =
-    useRejectedFileManager();
+export const MultiFileUpload = <Response = string,>(props: MultiFileUploadProps<Response>) => {
+  const { uploadService, acceptsOnly, onSuccessfulUpload, fileManager, body, sx, disabled } = props;
+  const { rejectedFiles, addRejected, removeRejected } = useRejectedFileManager();
 
-  const { fileUploads, removeFileUpload, handlers } =
-    fileManager ?? useFileUploaderManager<Response>();
+  const { fileUploads, removeFileUpload, handlers } = fileManager ?? useFileUploaderManager<Response>();
   const mergedObservers = useMemo(
     (): FileUploaderObservers<Response> => ({
       onFileUploadStart: handlers.onFileUploadStart,
@@ -37,13 +23,14 @@ export const MultiFileUpload = <Response = string,>(
     }),
     [handlers, onSuccessfulUpload]
   );
-  const { upload } = useFileUploader(uploadService, mergedObservers);
+  const { upload } = useFileUploader<Response>(uploadService, mergedObservers);
 
   const memoizedBody = useMemo(() => body ?? <FileDropzoneBody />, [body]);
 
   return (
     <Stack spacing={2}>
       <FileDropzone
+        disabled={disabled}
         sx={sx?.sx}
         dragZoneSx={sx?.dragZoneSx}
         dropZoneSx={sx?.dropZoneSx}

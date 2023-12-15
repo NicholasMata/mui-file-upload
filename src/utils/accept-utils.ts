@@ -1,7 +1,7 @@
-import mimeDb from "mime-db";
-import { FileUtils } from "./file-utils";
+import mimeDb from 'mime-db';
+import { FileUtils } from './file-utils';
 
-export type FriendlyAcceptType = "extension" | "name" | "mime";
+export type FriendlyAcceptType = 'extension' | 'name' | 'mime';
 
 export interface MimeType {
   readonly key: string;
@@ -20,14 +20,14 @@ export class AcceptUtils {
    */
   static getMimeTypes(accepts: string) {
     return accepts
-      .replace(/\s/g, "")
-      .split(",")
+      .replace(/\s/g, '')
+      .split(',')
       .reduce<MimeType[]>((all, accept) => {
-        if (accept.startsWith(".")) {
+        if (accept.startsWith('.')) {
           const withoutDot = accept.substring(1);
           all.push({ key: accept, extensions: [withoutDot] });
         } else {
-          let mime = mimeDb[accept];
+          const mime = mimeDb[accept];
           let mimeEntries = [];
           if (mime) {
             mimeEntries.push({
@@ -35,9 +35,9 @@ export class AcceptUtils {
               extensions: mime.extensions ?? [],
             });
           }
-          if (accept.includes("*")) {
+          if (accept.includes('*')) {
             mimeEntries = Object.keys(mimeDb)
-              .filter((k) => k.includes(accept.replace("*", "")))
+              .filter((k) => k.includes(accept.replace('*', '')))
               .map((k) => ({ key: k, extensions: mimeDb[k].extensions ?? [] }));
           }
           all.push(...mimeEntries);
@@ -59,17 +59,17 @@ export class Accept {
    * @param type The type of friendly string to parse out.
    * @returns An array of accept strings.
    */
-  asFormat(type: FriendlyAcceptType = "extension"): string[] {
+  asFormat(type: FriendlyAcceptType = 'extension'): string[] {
     const mimeTypes = this.mimeTypes;
     return mimeTypes.reduce((all, mimeType) => {
       switch (type) {
-        case "name":
+        case 'name':
           all.push(...(mimeType.extensions ?? []));
           break;
-        case "extension":
-          all.push(...(mimeType.extensions ?? []).map((e) => "." + e));
+        case 'extension':
+          all.push(...(mimeType.extensions ?? []).map((e) => '.' + e));
           break;
-        case "mime":
+        case 'mime':
           all.push(mimeType.key);
           break;
       }
@@ -83,8 +83,8 @@ export class Accept {
    * @param type The type aka "name" or "extension".
    * @returns A user friendly display string for the accepts.
    */
-  toString(type: FriendlyAcceptType = "name") {
-    return this.asFormat(type).join(", ");
+  toString(type: FriendlyAcceptType = 'name') {
+    return this.asFormat(type).join(', ');
   }
 
   /**
@@ -94,11 +94,11 @@ export class Accept {
    */
   acceptsFilename(filename: string) {
     const extension = FileUtils.getExtension(filename);
-    return this.asFormat("name").indexOf(extension) > -1;
+    return this.asFormat('name').indexOf(extension) > -1;
   }
 
   acceptsMimeType(mimeType: string) {
-    if (mimeType.length == 0) return true;
-    return this.asFormat("mime").indexOf(mimeType) > -1;
+    if (mimeType.length == 0) return false;
+    return this.asFormat('mime').indexOf(mimeType) > -1;
   }
 }

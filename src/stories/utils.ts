@@ -1,4 +1,4 @@
-import { FileUploadService } from "../hooks/useFileUploader";
+import { FileUploadService } from '../hooks/useFileUploader';
 
 export type FakeServiceOptions = {
   milliseconds?: number;
@@ -11,7 +11,7 @@ export const useFakeService = ({
   return (_, o) => {
     return new Promise<void>((resolve, reject) => {
       let progress = 0;
-      let interval = setInterval(() => {
+      const interval = setInterval(() => {
         if (progress == 100) clearInterval(interval);
         o(progress);
         if (progress == 100)

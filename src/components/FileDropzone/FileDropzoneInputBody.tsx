@@ -1,14 +1,15 @@
-import { Link, Typography } from "@mui/material";
-import { ReactNode, useMemo } from "react";
-import { useFileDropzoneContext } from "./hooks";
+import { Link, SxProps, Theme, Typography } from '@mui/material';
+import { ReactNode, useMemo } from 'react';
+import { useFileDropzoneContext } from './hooks';
 import {
   DEFAULT_FILE_DRAG_REJECTED_TITLE,
+  DEFAULT_FILE_DROPZONE_DISABLED,
   DEFAULT_FILE_OVERLOAD_TITLE,
   getDefaultBodyTitle,
   getDefaultDropBodyTitle,
-} from "./contants";
-import { FileDropzoneStatus } from "./types";
-import { FileDropzoneStatusUtils } from "../../utils";
+} from './contants';
+import { FileDropzoneStatus } from './types';
+import { FileDropzoneStatusUtils } from '../../utils';
 
 export type FileDropzoneInputBodyProps = {
   /** The title of the input. Will be prefixed with "Click to upload " */
@@ -22,38 +23,58 @@ export type FileDropzoneInputBodyProps = {
   fileOverloadTitle?: ReactNode;
   /** The title when invalid file types are being dragged over the zone. */
   dragRejectedTitle?: ReactNode;
+  /** The title when the dropzone is disabled */
+  disabledTitle?: ReactNode | ((dragActive: boolean) => ReactNode);
+  /** The system prop that allows defining system overrides as well as additional CSS styles. */
+  sx?: SxProps<Theme>;
 };
 
 export const FileDropzoneInputBody = (props: FileDropzoneInputBodyProps) => {
-  const { dropzoneState, openFileSelector, allowsMultiple } =
-    useFileDropzoneContext();
+  const { dropzoneState, openFileSelector, allowsMultiple } = useFileDropzoneContext();
+  const { disabled } = dropzoneState;
   const {
     title = `or ${getDefaultBodyTitle(allowsMultiple).toLowerCase()}`,
     dropTitle = `or ${getDefaultDropBodyTitle(allowsMultiple).toLowerCase()}`,
     fileOverloadTitle = DEFAULT_FILE_OVERLOAD_TITLE,
     dragRejectedTitle = DEFAULT_FILE_DRAG_REJECTED_TITLE,
+    disabledTitle: disabledTitleFn = DEFAULT_FILE_DROPZONE_DISABLED,
+    sx
   } = props;
 
-  const { status, isError } = useMemo(
-    () => FileDropzoneStatusUtils.getInfo(dropzoneState),
-    [dropzoneState]
+  const disabledTitle = useMemo(
+    () => (typeof disabledTitleFn == 'function' ? disabledTitleFn(!!dropzoneState.dragActive) : disabledTitleFn),
+    [dropzoneState.dragActive, disabledTitleFn]
+  );
+
+  const { status, isError } = useMemo(() => FileDropzoneStatusUtils.getInfo(dropzoneState), [dropzoneState]);
+
+  const titleComponent = useMemo(
+    () => {
+      switch(status) {
+        case FileDropzoneStatus.overloaded: return fileOverloadTitle;
+        case FileDropzoneStatus.dragRejected: return dragRejectedTitle;
+        case FileDropzoneStatus.disabled: return disabledTitle;
+        case FileDropzoneStatus.dragActive: return dropTitle;
+        default: return title
+      }
+    },
+    [status, isError, disabled, fileOverloadTitle, dragRejectedTitle, disabledTitle, dropTitle, title]
   );
 
   return (
     <Typography
       paddingX={2}
       paddingY={1}
-      color={isError ? "error" : "inherit"}
-      minWidth={"400px"}
+      color={isError ? 'error' : disabled ? 'text.disabled' : 'inherit'}
+      minWidth={400}
+      sx={sx}
     >
-      {status == FileDropzoneStatus.overloaded && fileOverloadTitle}
-      {status == FileDropzoneStatus.dragRejected && dragRejectedTitle}
-      {!isError && (
-        <>
-          <Link onClick={openFileSelector}>Click to upload</Link>{" "}
-          {status == FileDropzoneStatus.dragActive ? dropTitle : title}
-        </>
-      )}
+      {!isError && !disabled && (
+        <Link sx={{ cursor: 'pointer' }} onClick={openFileSelector}>
+          Click to upload
+        </Link>
+      )}{' '}
+      {titleComponent}
     </Typography>
   );
 };

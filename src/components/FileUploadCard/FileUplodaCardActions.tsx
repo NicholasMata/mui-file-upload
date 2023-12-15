@@ -1,6 +1,6 @@
-import { Replay, Delete } from "@mui/icons-material";
-import { Stack, IconButton } from "@mui/material";
-import { ReactNode } from "react";
+import { Replay, Delete } from '@mui/icons-material';
+import { Stack, IconButton } from '@mui/material';
+import { ReactNode } from 'react';
 
 export type FileUploadCardActionProps = {
   /** The remove/delete icon displayed if onRetry is defined. */
@@ -19,7 +19,7 @@ export const FileUploadCardActions = ({
   onRemove,
 }: FileUploadCardActionProps) => {
   return (
-    <Stack direction="row">
+    <Stack direction='row'>
       {onRetry && <IconButton onClick={onRetry}>{retryIcon}</IconButton>}
       {onRemove && <IconButton onClick={onRemove}>{removeIcon}</IconButton>}
     </Stack>

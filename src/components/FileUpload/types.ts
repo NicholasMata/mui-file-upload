@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
-import { FileUploadService, FileUploadManager } from "../../hooks";
-import { FileUpload } from "../../types";
-import { SxProps, Theme } from "@mui/material";
-import { FileDropzoneState } from "../FileDropzone/types";
+import { ReactNode } from 'react';
+import { FileUploadService, FileUploadManager } from '../../hooks';
+import { FileUpload } from '../../types';
+import { SxProps, Theme } from '@mui/material';
+import { FileDropzoneState } from '../FileDropzone/types';
 
 export type BaseFileUploadProps<Response = string> = {
   /** A service that is responsible for handling file uploads. */
@@ -17,13 +17,15 @@ export type BaseFileUploadProps<Response = string> = {
   body?: ReactNode;
   /** sx that will applied to the FileDropzone */
   sx?: FileUploadSx;
+  /** Whether the FileDropzone is disabled or not. Default: false*/
+  disabled?: boolean;
 };
 
 type FileUploadSx = {
-  /** Allows defining system overrides as well as additional CSS styles for the root container. **/ 
+  /** Allows defining system overrides as well as additional CSS styles for the root container. **/
   sx?: SxProps<Theme>;
-  /** Allows defining system overrides as well as additional CSS styles for the drag zone container. **/ 
+  /** Allows defining system overrides as well as additional CSS styles for the drag zone container. **/
   dragZoneSx?: (state: FileDropzoneState) => SxProps<Theme>;
-  /** Allows defining system overrides as well as additional CSS styles for the drop zone container. **/ 
+  /** Allows defining system overrides as well as additional CSS styles for the drop zone container. **/
   dropZoneSx?: SxProps<Theme>;
-}
+};

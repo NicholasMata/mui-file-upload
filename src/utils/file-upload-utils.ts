@@ -1,6 +1,6 @@
-import { FileUpload } from "../types";
+import { FileUpload } from '../types';
 
-export type FileUploadStatus = "Uploading" | "Failed" | "Completed";
+export type FileUploadStatus = 'Uploading' | 'Failed' | 'Completed';
 
 export class FileUploadUtils {
   /**
@@ -8,8 +8,8 @@ export class FileUploadUtils {
    * @param fileUpload The file upload that will be used to build the status.
    * @returns The upload status string.
    */
-  static formatStatus(fileUpload: FileUpload<any>): FileUploadStatus {
-    if (!fileUpload.completed) return "Uploading";
-    return fileUpload.failed ? "Failed" : "Completed";
+  static formatStatus<Response = string>(fileUpload: FileUpload<Response>): FileUploadStatus {
+    if (!fileUpload.completed) return 'Uploading';
+    return fileUpload.failed ? 'Failed' : 'Completed';
   }
 }

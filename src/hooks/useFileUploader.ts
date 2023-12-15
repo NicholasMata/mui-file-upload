@@ -1,6 +1,6 @@
-import { useCallback } from "react";
-import { FileUploaderObservers } from "./types";
-import { FileUpload } from "../types";
+import { useCallback } from 'react';
+import { FileUploaderObservers } from './types';
+import { FileUpload } from '../types';
 
 export type FileUploader<Response> = {
   /** A function that can be called to upload a file or retry a failed file upload. */
@@ -8,21 +8,17 @@ export type FileUploader<Response> = {
 };
 
 /** A type for a function that can be called to upload a file and track it's progress. */
-export type FileUploadService<Response> = (
-  file: File,
-  onProgress: (progress: number) => void
-) => Promise<Response>;
+export type FileUploadService<Response = string> = (file: File, onProgress: (progress: number) => void) => Promise<Response>;
 
 export const useFileUploader = <Response = string>(
   networkService: FileUploadService<Response>,
   observers: FileUploaderObservers<Response>
 ): FileUploader<Response> => {
-  const { onFileUploadStart, onFileProgressUpdate, onFileUploadComplete } =
-    observers;
+  const { onFileUploadStart, onFileProgressUpdate, onFileUploadComplete } = observers;
 
   const uploader = useCallback(
     (fileOrFileUpload: File | FileUpload<Response>) => {
-      const isRetry = "id" in fileOrFileUpload;
+      const isRetry = 'id' in fileOrFileUpload;
       const fileUpload: FileUpload<Response> = !isRetry
         ? {
             id: generateGUID(),
@@ -57,12 +53,7 @@ export const useFileUploader = <Response = string>(
         .catch(() => handleCompletion(true));
       onFileUploadStart(fileUpload, isRetry);
     },
-    [
-      networkService,
-      onFileUploadStart,
-      onFileProgressUpdate,
-      onFileUploadComplete,
-    ]
+    [networkService, onFileUploadStart, onFileProgressUpdate, onFileUploadComplete]
   );
 
   const upload = useCallback(
@@ -84,9 +75,9 @@ export const useFileUploader = <Response = string>(
 };
 
 function generateGUID() {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     const r = (Math.random() * 16) | 0;
-    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }

@@ -6,10 +6,10 @@ export class FileUtils {
    */
   static formatFileSize(bytes: number): string {
     if (bytes === 0) {
-      return "0 B";
+      return '0 B';
     }
 
-    const sizes = ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+    const sizes = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     const i = Math.floor(Math.log10(bytes) / 3);
     const size = (bytes / Math.pow(1000, i)).toFixed(2);
 
@@ -17,9 +17,9 @@ export class FileUtils {
   }
 
   static getExtension(fileName: string): string {
-    const dotIndex = fileName.lastIndexOf(".");
+    const dotIndex = fileName.lastIndexOf('.');
     if (dotIndex === -1) {
-      return ""; // No extension found
+      return ''; // No extension found
     }
     return fileName.substring(dotIndex + 1).toLowerCase();
   }

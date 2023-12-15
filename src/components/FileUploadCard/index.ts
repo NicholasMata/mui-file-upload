@@ -1,2 +1,2 @@
-export * from "./FileUploadCard";
-export * from "./FileUplodaCardActions";
+export * from './FileUploadCard';
+export * from './FileUplodaCardActions';
