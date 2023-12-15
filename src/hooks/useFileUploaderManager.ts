@@ -1,23 +1,23 @@
 import { useMemo, useState } from 'react';
-import { FileUploaderObservers } from './types';
-import { FileUpload } from '../types';
+import { type FileUploaderObservers } from './types';
+import { type FileUpload } from '../types';
 
-export type FileUploadManager<Response = string> = {
+export interface FileUploadManager<Response = string> {
   fileUploads: {
-    inProgress: FileUpload<Response>[];
-    successful: FileUpload<Response>[];
-    failed: FileUpload<Response>[];
+    inProgress: Array<FileUpload<Response>>;
+    successful: Array<FileUpload<Response>>;
+    failed: Array<FileUpload<Response>>;
     length: number;
   };
   removeFileUpload: (fileUploadToRemove: FileUpload<Response>) => void;
   handlers: FileUploaderObservers<Response>;
-};
+}
 
 export const useFileUploaderManager = <Response = string>(): FileUploadManager<Response> => {
-  const [fileUploads, setFileUploads] = useState<FileUpload<Response>[]>([]);
+  const [fileUploads, setFileUploads] = useState<Array<FileUpload<Response>>>([]);
 
   const inProgress = fileUploads.filter((fu) => !fu.completed);
-  const successful = fileUploads.filter((fu) => fu.completed && !fu.failed);
+  const successful = fileUploads.filter((fu) => fu.completed && !(fu.failed ?? false));
   const failed = fileUploads.filter((fu) => fu.completed && fu.failed);
 
   const handlers: FileUploaderObservers<Response> = useMemo(
@@ -39,7 +39,7 @@ export const useFileUploaderManager = <Response = string>(): FileUploadManager<R
     [setFileUploads, append, update]
   );
 
-  const removeFileUpload = (fileUploadToRemove: FileUpload<Response>) => {
+  const removeFileUpload = (fileUploadToRemove: FileUpload<Response>): void => {
     setFileUploads(remove(fileUploadToRemove));
   };
 
@@ -56,13 +56,13 @@ export const useFileUploaderManager = <Response = string>(): FileUploadManager<R
 };
 
 function remove<Response = unknown>(fileToRemove: FileUpload<Response>) {
-  return (prev: FileUpload<Response>[]) => prev.filter((p) => p.id !== fileToRemove.id);
+  return (prev: Array<FileUpload<Response>>) => prev.filter((p) => p.id !== fileToRemove.id);
 }
 
 function update<Response = unknown>(fileToUpdate: FileUpload<Response>) {
-  return (prev: FileUpload<Response>[]) => prev.map((p) => (p.id === fileToUpdate.id ? fileToUpdate : p));
+  return (prev: Array<FileUpload<Response>>) => prev.map((p) => (p.id === fileToUpdate.id ? fileToUpdate : p));
 }
 
 function append<Response = unknown>(fileToAppend: FileUpload<Response>) {
-  return (prev: FileUpload<Response>[]) => [...prev, fileToAppend];
+  return (prev: Array<FileUpload<Response>>) => [...prev, fileToAppend];
 }

@@ -1,10 +1,10 @@
 import { InsertDriveFile } from '@mui/icons-material';
-import { Card, CardHeader, Stack, Typography, LinearProgress, Box, LinearProgressProps } from '@mui/material';
-import { ReactNode } from 'react';
+import { Card, CardHeader, Stack, Typography, LinearProgress, Box, type LinearProgressProps } from '@mui/material';
+import { type ReactNode } from 'react';
 import { FileUploadUtils, FileUtils } from '../../utils';
-import { FileUpload } from '../../types';
+import { type FileUpload } from '../../types';
 
-export type FileUploadCardProps<FileUploadResponse = string> = {
+export interface FileUploadCardProps<FileUploadResponse = string> {
   /** The icon that will be displayed */
   icon?: ReactNode;
   /** The variant for the card. */
@@ -12,14 +12,14 @@ export type FileUploadCardProps<FileUploadResponse = string> = {
   /** The FileUpload that will be used to build the card. */
   fileUpload: FileUpload<FileUploadResponse>;
   actions?: ReactNode;
-};
+}
 
 export const FileUploadCard = <FileUploadResponse = string,>({
   icon = <InsertDriveFile />,
   fileUpload,
   variant = 'outlined',
   actions,
-}: FileUploadCardProps<FileUploadResponse>) => {
+}: FileUploadCardProps<FileUploadResponse>): ReactNode => {
   const status = FileUploadUtils.formatStatus(fileUpload);
   return (
     <Card variant={variant}>
@@ -44,7 +44,7 @@ export const FileUploadCard = <FileUploadResponse = string,>({
 
 type LinearProgressWithLabelProps = LinearProgressProps & { value: number };
 
-const LinearProgressWithLabel: React.FC<LinearProgressWithLabelProps> = (props) => (
+const LinearProgressWithLabel = (props: LinearProgressWithLabelProps): ReactNode => (
   <Box sx={{ display: 'flex', alignItems: 'center' }}>
     <Box sx={{ width: '100%', mr: 1 }}>
       <LinearProgress variant='determinate' {...props} />

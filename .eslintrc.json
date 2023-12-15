@@ -3,13 +3,22 @@
     "browser": true,
     "es2021": true
   },
-  "extends": ["standard-with-typescript", "plugin:react/recommended"],
+  "extends": [
+    "standard-with-typescript",
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
+    "prettier",
+    "plugin:prettier/recommended",
+    "plugin:storybook/recommended"
+  ],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react"],
-  "rules": {},
+  "plugins": ["react", "prettier"],
+  "rules": {
+    "@typescript-eslint/no-invalid-void-type": "off"
+  },
   "settings": {
     "react": {
       "version": "detect"

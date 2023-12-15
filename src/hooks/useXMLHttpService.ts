@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { FileUploadService } from './useFileUploader';
+import { type FileUploadService } from './useFileUploader';
 
 export const useXMLHttpService = <Response = string>(
   endpoint: string,
@@ -23,14 +23,14 @@ export const useXMLHttpService = <Response = string>(
         xhr.onload = () => {
           if (xhr.status === 200) {
             const responseText = xhr.responseText;
-            resolve(responseTransformer ? responseTransformer(responseText) : (xhr.responseText as Response));
+            resolve(responseTransformer != null ? responseTransformer(responseText) : (xhr.responseText as Response));
           } else {
-            reject();
+            reject(new Error(`${method}: ${endpoint} responded with bad status code ${xhr.status}`));
           }
         };
 
-        xhr.onerror = () => {
-          reject();
+        xhr.onerror = (e) => {
+          reject(e);
         };
 
         const formData = new FormData();

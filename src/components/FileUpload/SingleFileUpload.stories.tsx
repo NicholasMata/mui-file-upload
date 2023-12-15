@@ -1,11 +1,11 @@
-import { Meta, StoryObj } from '@storybook/react';
-import React, { ComponentProps, useMemo } from 'react';
+import { type Meta, type StoryObj } from '@storybook/react';
+import { type ReactNode, type ComponentProps, useMemo } from 'react';
 import { useFakeService } from '../../stories/utils';
 import { SingleFileUpload } from '.';
 import { useFileUploaderManager } from '../../hooks';
 import { FileDropzoneInputBody, FileDropzoneStatus, useFileDropzoneContext } from '../FileDropzone';
-import { Link, Stack, Theme, Typography, alpha } from '@mui/material';
-import { FileDropzoneStatusUtils, FileDropzoneUtils } from '../../utils';
+import { Link, Stack, type Theme, Typography, alpha } from '@mui/material';
+import { FileDropzoneStatusUtils, FileDropzoneUtils, type StatusColorOptions } from '../../utils';
 import {
   DEFAULT_BACKGROUND_ALPHA,
   DEFAULT_BORDER_ALPHA,
@@ -13,7 +13,12 @@ import {
   DEFAULT_DRAG_ACTIVE_BORDER_ALPHA,
 } from '../FileDropzone/contants';
 
-type StoryProps = { failureRate: number; title: string; dropTitle: string; disabledTitle: string };
+interface StoryProps {
+  failureRate: number;
+  title: string;
+  dropTitle: string;
+  disabledTitle: string;
+}
 
 type AllProps = ComponentProps<typeof SingleFileUpload<string>> & StoryProps;
 
@@ -83,20 +88,20 @@ export const CustomTitle: Story = {
   },
 };
 
-const CustomZoneBody = () => {
+const CustomZoneBody = (): ReactNode => {
   const { dropzoneState, openFileSelector } = useFileDropzoneContext();
   const { disabled } = dropzoneState;
   const { status, isError } = useMemo(() => FileDropzoneStatusUtils.getInfo(dropzoneState), [dropzoneState]);
 
   return (
     <Typography paddingX={2} paddingY={1} color={isError ? 'error' : 'inherit'} minWidth={'400px'}>
-      {status == FileDropzoneStatus.overloaded && 'Custom Overloaded Body'}
-      {status == FileDropzoneStatus.dragRejected && 'Custom Drag Rejected'}
-      {status == FileDropzoneStatus.disabled && 'Custom Disabled'}
+      {status === FileDropzoneStatus.overloaded && 'Custom Overloaded Body'}
+      {status === FileDropzoneStatus.dragRejected && 'Custom Drag Rejected'}
+      {status === FileDropzoneStatus.disabled && 'Custom Disabled'}
       {!isError && !disabled && (
         <>
           <Link onClick={openFileSelector}>Custom Open File Browser</Link>{' '}
-          {status == FileDropzoneStatus.dragActive ? 'Custom Drop Text' : 'Custom Text Here'}
+          {status === FileDropzoneStatus.dragActive ? 'Custom Drop Text' : 'Custom Text Here'}
         </>
       )}
     </Typography>
@@ -107,12 +112,12 @@ export const CustomBody: Story = {
   render: (args) => {
     const uploadService = useFakeService({ failureRate: args.failureRate });
     const fileManager = useFileUploaderManager<void>();
-    const backgroundColor = (t: Theme) => ({
+    const backgroundColor = (t: Theme): StatusColorOptions => ({
       default: alpha(t.palette.secondary.main, DEFAULT_BACKGROUND_ALPHA),
       disabled: alpha(t.palette.text.disabled, DEFAULT_BACKGROUND_ALPHA),
       dragActive: alpha(t.palette.secondary.main, DEFAULT_DRAG_ACTIVE_BACKGROUND_ALPHA),
     });
-    const borderColor = (t: Theme) => ({
+    const borderColor = (t: Theme): boolean => ({
       default: alpha(t.palette.secondary.main, DEFAULT_BORDER_ALPHA),
       disabled: alpha(t.palette.text.disabled, DEFAULT_BORDER_ALPHA),
       dragActive: alpha(t.palette.secondary.main, DEFAULT_DRAG_ACTIVE_BORDER_ALPHA),

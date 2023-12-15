@@ -1,13 +1,13 @@
 import { Stack } from '@mui/material';
-import { useFileUploaderManager, useFileUploader, FileUploaderObservers } from '../../hooks';
+import { useFileUploaderManager, useFileUploader, type FileUploaderObservers } from '../../hooks';
 import { useRejectedFileManager, FileDropzone, FileDropzoneBody } from '../FileDropzone';
-import { BaseFileUploadProps } from './types';
+import { type BaseFileUploadProps } from './types';
 import { FileUploadResults } from './FileUploadResults';
-import { useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 
 export type MultiFileUploadProps<Response = string> = BaseFileUploadProps<Response>;
 
-export const MultiFileUpload = <Response = string,>(props: MultiFileUploadProps<Response>) => {
+export const MultiFileUpload = <Response = string,>(props: MultiFileUploadProps<Response>): ReactNode => {
   const { uploadService, acceptsOnly, onSuccessfulUpload, fileManager, body, sx, disabled } = props;
   const { rejectedFiles, addRejected, removeRejected } = useRejectedFileManager();
 
@@ -44,7 +44,7 @@ export const MultiFileUpload = <Response = string,>(props: MultiFileUploadProps<
         rejected={rejectedFiles}
         failed={fileUploads.failed}
         inProgress={fileUploads.inProgress}
-        successful={onSuccessfulUpload ? [] : fileUploads.successful}
+        successful={onSuccessfulUpload != null ? [] : fileUploads.successful}
         onRetry={upload}
         onDismissRejected={removeRejected}
         onRemoveFileUpload={removeFileUpload}

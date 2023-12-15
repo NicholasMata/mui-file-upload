@@ -1,5 +1,5 @@
-import { Link, SxProps, Theme, Typography } from '@mui/material';
-import { ReactNode, useMemo } from 'react';
+import { Link, type SxProps, type Theme, Typography } from '@mui/material';
+import { type ReactNode, useMemo } from 'react';
 import { useFileDropzoneContext } from './hooks';
 import {
   DEFAULT_FILE_DRAG_REJECTED_TITLE,
@@ -11,7 +11,7 @@ import {
 import { FileDropzoneStatus } from './types';
 import { FileDropzoneStatusUtils } from '../../utils';
 
-export type FileDropzoneInputBodyProps = {
+export interface FileDropzoneInputBodyProps {
   /** The title of the input. Will be prefixed with "Click to upload " */
   title?: ReactNode;
   /**
@@ -27,9 +27,9 @@ export type FileDropzoneInputBodyProps = {
   disabledTitle?: ReactNode | ((dragActive: boolean) => ReactNode);
   /** The system prop that allows defining system overrides as well as additional CSS styles. */
   sx?: SxProps<Theme>;
-};
+}
 
-export const FileDropzoneInputBody = (props: FileDropzoneInputBodyProps) => {
+export const FileDropzoneInputBody: React.FC<FileDropzoneInputBodyProps> = (props: FileDropzoneInputBodyProps) => {
   const { dropzoneState, openFileSelector, allowsMultiple } = useFileDropzoneContext();
   const { disabled } = dropzoneState;
   const {
@@ -38,28 +38,30 @@ export const FileDropzoneInputBody = (props: FileDropzoneInputBodyProps) => {
     fileOverloadTitle = DEFAULT_FILE_OVERLOAD_TITLE,
     dragRejectedTitle = DEFAULT_FILE_DRAG_REJECTED_TITLE,
     disabledTitle: disabledTitleFn = DEFAULT_FILE_DROPZONE_DISABLED,
-    sx
+    sx,
   } = props;
 
   const disabledTitle = useMemo(
-    () => (typeof disabledTitleFn == 'function' ? disabledTitleFn(!!dropzoneState.dragActive) : disabledTitleFn),
+    () => (typeof disabledTitleFn === 'function' ? disabledTitleFn(dropzoneState.dragActive != null) : disabledTitleFn),
     [dropzoneState.dragActive, disabledTitleFn]
   );
 
   const { status, isError } = useMemo(() => FileDropzoneStatusUtils.getInfo(dropzoneState), [dropzoneState]);
 
-  const titleComponent = useMemo(
-    () => {
-      switch(status) {
-        case FileDropzoneStatus.overloaded: return fileOverloadTitle;
-        case FileDropzoneStatus.dragRejected: return dragRejectedTitle;
-        case FileDropzoneStatus.disabled: return disabledTitle;
-        case FileDropzoneStatus.dragActive: return dropTitle;
-        default: return title
-      }
-    },
-    [status, isError, disabled, fileOverloadTitle, dragRejectedTitle, disabledTitle, dropTitle, title]
-  );
+  const titleComponent = useMemo(() => {
+    switch (status) {
+      case FileDropzoneStatus.overloaded:
+        return fileOverloadTitle;
+      case FileDropzoneStatus.dragRejected:
+        return dragRejectedTitle;
+      case FileDropzoneStatus.disabled:
+        return disabledTitle;
+      case FileDropzoneStatus.dragActive:
+        return dropTitle;
+      default:
+        return title;
+    }
+  }, [status, isError, disabled, fileOverloadTitle, dragRejectedTitle, disabledTitle, dropTitle, title]);
 
   return (
     <Typography

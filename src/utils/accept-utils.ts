@@ -5,10 +5,10 @@ export type FriendlyAcceptType = 'extension' | 'name' | 'mime';
 
 export interface MimeType {
   readonly key: string;
-  readonly extensions: ReadonlyArray<string>;
+  readonly extensions: readonly string[];
 }
 
-export class AcceptUtils {
+export const AcceptUtils = {
   /**
    * NOTE: Issue with mime-db doesn't line up with input tag when provided mime types.
    *
@@ -18,7 +18,7 @@ export class AcceptUtils {
    * @param accepts An accepts string to get mime types from. i.e. "application/pdf,application/json", ".pdf,.json"
    * @returns An array of mime types parse from accepts string.
    */
-  static getMimeTypes(accepts: string) {
+  getMimeTypes(accepts: string) {
     return accepts
       .replace(/\s/g, '')
       .split(',')
@@ -29,7 +29,7 @@ export class AcceptUtils {
         } else {
           const mime = mimeDb[accept];
           let mimeEntries = [];
-          if (mime) {
+          if (mime != null) {
             mimeEntries.push({
               key: accept,
               extensions: mime.extensions ?? [],
@@ -43,17 +43,18 @@ export class AcceptUtils {
           all.push(...mimeEntries);
         }
         return all;
-      }, [] as MimeType[]);
-  }
-}
+      }, []);
+  },
+};
 
 export class Accept {
   accepts: string;
-  readonly mimeTypes: ReadonlyArray<MimeType>;
+  readonly mimeTypes: readonly MimeType[];
   constructor(accepts: string) {
     this.accepts = accepts;
     this.mimeTypes = AcceptUtils.getMimeTypes(accepts);
   }
+
   /**
    * Parses out the include accept strings from accepts string.
    * @param type The type of friendly string to parse out.
@@ -61,7 +62,7 @@ export class Accept {
    */
   asFormat(type: FriendlyAcceptType = 'extension'): string[] {
     const mimeTypes = this.mimeTypes;
-    return mimeTypes.reduce((all, mimeType) => {
+    return mimeTypes.reduce<string[]>((all, mimeType) => {
       switch (type) {
         case 'name':
           all.push(...(mimeType.extensions ?? []));
@@ -75,7 +76,7 @@ export class Accept {
       }
 
       return all;
-    }, [] as string[]);
+    }, []);
   }
 
   /**
@@ -83,7 +84,7 @@ export class Accept {
    * @param type The type aka "name" or "extension".
    * @returns A user friendly display string for the accepts.
    */
-  toString(type: FriendlyAcceptType = 'name') {
+  toString(type: FriendlyAcceptType = 'name'): string {
     return this.asFormat(type).join(', ');
   }
 
@@ -92,13 +93,13 @@ export class Accept {
    * @param filename The filename which contains the extension as well.
    * @returns A boolean indicating if accept matches filename.
    */
-  acceptsFilename(filename: string) {
+  acceptsFilename(filename: string): boolean {
     const extension = FileUtils.getExtension(filename);
-    return this.asFormat('name').indexOf(extension) > -1;
+    return this.asFormat('name').includes(extension);
   }
 
-  acceptsMimeType(mimeType: string) {
-    if (mimeType.length == 0) return false;
-    return this.asFormat('mime').indexOf(mimeType) > -1;
+  acceptsMimeType(mimeType: string): boolean {
+    if (mimeType.length === 0) return false;
+    return this.asFormat('mime').includes(mimeType);
   }
 }

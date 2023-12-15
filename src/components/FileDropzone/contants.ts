@@ -1,7 +1,7 @@
-export const getDefaultBodyTitle = (allowsMultiple: boolean) =>
+export const getDefaultBodyTitle = (allowsMultiple: boolean): string =>
   `Drag the file${allowsMultiple ? 's' : ''} here to start uploading`;
 
-export const getDefaultDropBodyTitle = (allowsMultiple: boolean) =>
+export const getDefaultDropBodyTitle = (allowsMultiple: boolean): string =>
   `Drop the file${allowsMultiple ? 's' : ''} to start uploading`;
 
 export const DEFAULT_FILE_OVERLOAD_TITLE = 'Too many files have been dragged';

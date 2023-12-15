@@ -1,8 +1,8 @@
-import { Box, SxProps, Theme, alpha } from '@mui/material';
+import { Box, type SxProps, type Theme, alpha } from '@mui/material';
 import {
-  ChangeEventHandler,
-  DragEventHandler,
-  PropsWithChildren,
+  type ChangeEventHandler,
+  type DragEventHandler,
+  type PropsWithChildren,
   useCallback,
   useEffect,
   useMemo,
@@ -11,10 +11,10 @@ import {
 } from 'react';
 import { Accept, FileDropzoneUtils } from '../../utils';
 import { FileDropzoneProvider } from './FileDropzoneContext';
-import { FileDropzoneState } from './types';
+import { type FileDropzoneState } from './types';
 import { DEFAULT_BACKGROUND_ALPHA, DEFAULT_BORDER_ALPHA, DEFAULT_DRAG_ACTIVE_BACKGROUND_ALPHA } from './contants';
 
-export type FileDropzoneProps = {
+export interface FileDropzoneProps {
   /** Whether of not the FileDropzone can handle multiple files. */
   allowsMultiple?: boolean;
   /** An accepts string indicating that the FileDropzone should only accept specific files. */
@@ -35,9 +35,9 @@ export type FileDropzoneProps = {
   onFilesAccepted: (files: File[]) => void;
   /** Called when dropzone files are rejected. */
   onFilesRejected: (files: File[]) => void;
-  /** Whether the FileDropzone is disabled or not. Default: false*/
+  /** Whether the FileDropzone is disabled or not. Default: false */
   disabled?: boolean;
-};
+}
 
 const defaultSx: SxProps<Theme> = {
   display: 'flex',
@@ -92,7 +92,7 @@ const defaultDropZoneSx: SxProps<Theme> = {
   borderRadius: '1rem',
 };
 
-const defaultFileDropzoneState = (disabled: boolean) => ({ hasTooManyFiles: false, disabled });
+const defaultFileDropzoneState = (disabled: boolean): FileDropzoneState => ({ hasTooManyFiles: false, disabled });
 
 export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
   allowsMultiple = true,
@@ -104,10 +104,10 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
   onFilesRejected,
   disabled = false,
   children,
-}) => {
+}: PropsWithChildren<FileDropzoneProps>) => {
   const [state, setState] = useState<FileDropzoneState>(defaultFileDropzoneState(disabled));
 
-  const accept = useMemo(() => (acceptsOnly ? new Accept(acceptsOnly) : undefined), [acceptsOnly]);
+  const accept = useMemo(() => (acceptsOnly !== undefined ? new Accept(acceptsOnly) : undefined), [acceptsOnly]);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -123,9 +123,9 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
         hasTooManyFiles: !allowsMultiple && e.dataTransfer.items.length > 1,
       };
 
-      if (accept && e.dataTransfer.items.length > 0) {
+      if (accept !== undefined && e.dataTransfer.items.length > 0) {
         const rejectedFiles = Array.from(e.dataTransfer.items).filter((f) => !accept.acceptsMimeType(f.type));
-        console.log('rejectedFiles', rejectedFiles)
+        console.log('rejectedFiles', rejectedFiles);
         newState.dragActive.hasRejectedFiles = rejectedFiles.length > 0;
       }
       const stateChanged = !FileDropzoneUtils.isSameState(state, newState);
@@ -147,12 +147,13 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = function (e) {
     e.preventDefault();
-    if (e.target.files && e.target.files[0]) {
-      handleFiles(e.target.files);
+    const files = e.target.files;
+    if (files != null && files.length > 0) {
+      handleFiles(files);
     }
   };
 
-  const handleFiles = (files: FileList) => {
+  const handleFiles = (files: FileList): void => {
     const fileOverload = !allowsMultiple && files.length > 1;
     if (fileOverload) {
       setState((prev) => ({ ...prev, hasTooManyFiles: true }));
@@ -164,7 +165,7 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
     }
     let acceptedFiles: File[] = [];
     let rejectedFiles: File[] = [];
-    if (accept) {
+    if (accept !== undefined) {
       const result = Array.from(files).reduce(
         (acc, file) => {
           if (accept.acceptsFilename(file.name)) {
@@ -210,13 +211,15 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
     [state, openFileSelector, accept, allowsMultiple, disabled]
   );
 
-  const customDragZoneSx = useMemo(() => (dragZoneSx ? dragZoneSx(state) : null), [state, dragZoneSx]);
+  const customDragZoneSx = useMemo(() => dragZoneSx?.(state) ?? null, [state, dragZoneSx]);
 
   return (
     <Box
       component='form'
       onDragEnter={handleDrag}
-      onSubmit={(e) => e.preventDefault()}
+      onSubmit={(e) => {
+        e.preventDefault();
+      }}
       sx={[defaultSx, ...(Array.isArray(sx) ? sx : [sx]), requiredDefaultSx]}
     >
       <input
@@ -234,8 +237,8 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
       <Box
         sx={[
           defaultDragZoneSx(disabled),
-          state.dragActive ? dragActiveSx : null,
-          state.dragActive?.hasRejectedFiles ? dragActiveRejectedSx : null,
+          state.dragActive != null ? dragActiveSx : null,
+          state.dragActive?.hasRejectedFiles === true ? dragActiveRejectedSx : null,
           ...(Array.isArray(customDragZoneSx) ? customDragZoneSx : [customDragZoneSx]),
           state.hasTooManyFiles ? defaultDragZoneOverloadSx : null,
         ]}
@@ -246,7 +249,7 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
        * I can no longer remember why I opted for this new box displaying
        * when file is dragged over it instead of putting triggers on the parent box.
        **/}
-      {state.dragActive && (
+      {state.dragActive != null && (
         <Box
           sx={[
             defaultDropZoneSx,

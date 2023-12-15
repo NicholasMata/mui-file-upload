@@ -1,7 +1,7 @@
-import { FileUpload } from '../types';
+import { type FileUpload } from '../types';
 
-export type FileUploaderObservers<Response = string> = {
+export interface FileUploaderObservers<Response = string> {
   onFileUploadStart: (newFileUpload: FileUpload<Response>, isRetry: boolean) => void;
   onFileProgressUpdate: (updatedFileUpload: FileUpload<Response>) => void;
   onFileUploadComplete: (completedFileUpload: FileUpload<Response>) => void;
-};
+}

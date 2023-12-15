@@ -1,8 +1,8 @@
 import { useContext } from 'react';
-import { FileDropzoneContext } from '../FileDropzoneContext';
+import { FileDropzoneContext, type FileDropzoneContextType } from '../FileDropzoneContext';
 
-export const useFileDropzoneContext = () => {
+export const useFileDropzoneContext = (): FileDropzoneContextType => {
   const context = useContext(FileDropzoneContext);
-  if (!context) throw new Error("'useFileDropzoneContext' can only be used inside a 'FileDropzone' component");
+  if (context == null) throw new Error("'useFileDropzoneContext' can only be used inside a 'FileDropzone' component");
   return context;
 };

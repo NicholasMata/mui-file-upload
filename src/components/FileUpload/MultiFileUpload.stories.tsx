@@ -1,5 +1,5 @@
-import { Meta, StoryObj } from '@storybook/react';
-import React, { ComponentProps, useMemo } from 'react';
+import { type Meta, type StoryObj } from '@storybook/react';
+import { type ComponentProps, useMemo, type ReactNode } from 'react';
 import { useFakeService } from '../../stories/utils';
 import { MultiFileUpload } from './MultiFileUpload';
 import { FileDropzoneBody, useFileDropzoneContext } from '../FileDropzone';
@@ -11,7 +11,12 @@ import {
   DEFAULT_DRAG_ACTIVE_BORDER_ALPHA,
 } from '../FileDropzone/contants';
 
-type StoryProps = { failureRate: number; title: string; dropTitle: string; disabledTitle: string };
+interface StoryProps {
+  failureRate: number;
+  title: string;
+  dropTitle: string;
+  disabledTitle: string;
+}
 
 type AllProps = ComponentProps<typeof MultiFileUpload<string>> & StoryProps;
 
@@ -68,10 +73,10 @@ export const CustomTitle: Story = {
   },
 };
 
-const CustomFileUploadZone = () => {
+const CustomFileUploadZone = (): ReactNode => {
   const { dropzoneState } = useFileDropzoneContext();
   const title = useMemo(() => {
-    if (dropzoneState.dragActive) {
+    if (dropzoneState.dragActive != null) {
       if (dropzoneState.disabled) return 'Custom Body Disabled (File Over Me)';
       return 'Custom Body Drop Files';
     } else {
@@ -98,11 +103,11 @@ export const CustomBody: Story = {
             borderWidth: 3,
             backgroundColor: alpha(
               state.disabled ? t.palette.text.disabled : t.palette.secondary.main,
-              state.dragActive ? DEFAULT_DRAG_ACTIVE_BACKGROUND_ALPHA : DEFAULT_BACKGROUND_ALPHA
+              state.dragActive != null ? DEFAULT_DRAG_ACTIVE_BACKGROUND_ALPHA : DEFAULT_BACKGROUND_ALPHA
             ),
             borderColor: alpha(
               state.disabled ? t.palette.text.disabled : t.palette.secondary.main,
-              state.dragActive ? DEFAULT_DRAG_ACTIVE_BORDER_ALPHA : DEFAULT_BORDER_ALPHA
+              state.dragActive != null ? DEFAULT_DRAG_ACTIVE_BORDER_ALPHA : DEFAULT_BORDER_ALPHA
             ),
           }),
         }}

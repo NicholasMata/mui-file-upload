@@ -1,10 +1,10 @@
-export class FileUtils {
+export const FileUtils = {
   /**
    * Used to build a file size string aka '10 KB', '1.23 MB'
    * @param bytes The number of bytes.
    * @returns The file size formatted string.
    */
-  static formatFileSize(bytes: number): string {
+  formatFileSize(bytes: number): string {
     if (bytes === 0) {
       return '0 B';
     }
@@ -14,13 +14,13 @@ export class FileUtils {
     const size = (bytes / Math.pow(1000, i)).toFixed(2);
 
     return `${size} ${sizes[i]}`;
-  }
+  },
 
-  static getExtension(fileName: string): string {
+  getExtension(fileName: string): string {
     const dotIndex = fileName.lastIndexOf('.');
     if (dotIndex === -1) {
       return ''; // No extension found
     }
     return fileName.substring(dotIndex + 1).toLowerCase();
-  }
-}
+  },
+};

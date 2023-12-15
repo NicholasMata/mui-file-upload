@@ -1,8 +1,8 @@
 import { createContext } from 'react';
-import { FileDropzoneState } from './types';
-import { Accept } from '../../utils';
+import { type FileDropzoneState } from './types';
+import { type Accept } from '../../utils';
 
-export type FileDropzoneContext = {
+export interface FileDropzoneContextType {
   /** Indicates if file/s are curently over the FileDropzone */
   dropzoneState: FileDropzoneState;
   /** Can be called to open the file selector for the FileDropzone */
@@ -11,8 +11,8 @@ export type FileDropzoneContext = {
   accept?: Accept;
   /** Whether or not the FileDropzone can handle multiple files */
   allowsMultiple: boolean;
-};
+}
 
-export const FileDropzoneContext = createContext<FileDropzoneContext | undefined>(undefined);
+export const FileDropzoneContext = createContext<FileDropzoneContextType | undefined>(undefined);
 
 export const FileDropzoneProvider = FileDropzoneContext.Provider;

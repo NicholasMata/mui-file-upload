@@ -1,18 +1,18 @@
-import { Box, Fade, Grow, Stack, StackProps } from '@mui/material';
+import { Box, Fade, Grow, Stack, type StackProps } from '@mui/material';
 import { FileUploadCard, FileUploadCardActions } from '../FileUploadCard';
 import { RejectedFileUploadAlert } from '../RejectedFileUploadAlert';
-import { Ref, forwardRef } from 'react';
-import { FileUpload } from '../../types';
+import { type Ref, forwardRef, type ReactNode } from 'react';
+import { type FileUpload } from '../../types';
 
 type Props<Response = string> = {
   /** A list of files that have been rejected. */
   rejected: File[];
   /** A list of file uploads that are completed and have failed. */
-  failed: FileUpload<Response>[];
+  failed: Array<FileUpload<Response>>;
   /** A list of file uploads that are in progress. */
-  inProgress: FileUpload<Response>[];
+  inProgress: Array<FileUpload<Response>>;
   /** A list of fiel uploads that are compelted and successful */
-  successful: FileUpload<Response>[];
+  successful: Array<FileUpload<Response>>;
   /** Called when a rejected file alert should be dismissed aka removed from `rejected` */
   onDismissRejected?: (file: File) => void;
   /** Called when a failed file upload should be retried. */
@@ -33,7 +33,7 @@ const FileUploadResultsInner = <Response = string,>(
     ...stackProps
   }: Props<Response>,
   ref?: Ref<HTMLDivElement>
-) => (
+): ReactNode => (
   <Stack spacing={1} {...stackProps} ref={ref}>
     {rejected.map((f, i) => (
       <Grow in key={`rejected-${i}`}>

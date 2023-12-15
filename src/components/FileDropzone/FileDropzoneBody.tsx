@@ -2,7 +2,7 @@ import { Box, Button, Divider, Stack, Typography } from '@mui/material';
 import { AssignmentLate, TaskTwoTone, UploadFileTwoTone } from '@mui/icons-material';
 import { FileDropzoneStatusUtils } from '../../utils';
 import { useFileDropzoneContext } from './hooks';
-import { ReactNode, useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import {
   DEFAULT_FILE_DRAG_REJECTED_TITLE,
   DEFAULT_FILE_DROPZONE_DISABLED,
@@ -12,7 +12,7 @@ import {
 } from './contants';
 import { FileDropzoneStatus } from './types';
 
-export type FileDropzoneBodyProps = {
+export interface FileDropzoneBodyProps {
   /** The title of the zone. */
   title?: ReactNode;
   /**
@@ -25,9 +25,9 @@ export type FileDropzoneBodyProps = {
   dragRejectedTitle?: ReactNode;
   /** The title when the dropzone is disabled */
   disabledTitle?: ReactNode | ((dragActive: boolean) => ReactNode);
-};
+}
 
-export const FileDropzoneBody = (props: FileDropzoneBodyProps) => {
+export const FileDropzoneBody: React.FC<FileDropzoneBodyProps> = (props: FileDropzoneBodyProps) => {
   const { dropzoneState, openFileSelector, accept, allowsMultiple } = useFileDropzoneContext();
   const { disabled } = dropzoneState;
 
@@ -40,7 +40,7 @@ export const FileDropzoneBody = (props: FileDropzoneBodyProps) => {
   } = props;
 
   const disabledTitle = useMemo(
-    () => (typeof disabledTitleFn == 'function' ? disabledTitleFn(!!dropzoneState.dragActive) : disabledTitleFn),
+    () => (typeof disabledTitleFn === 'function' ? disabledTitleFn(dropzoneState.dragActive != null) : disabledTitleFn),
     [dropzoneState.dragActive, disabledTitleFn]
   );
 
@@ -88,7 +88,7 @@ export const FileDropzoneBody = (props: FileDropzoneBodyProps) => {
       <Stack>
         <Typography variant='h3'>{icon}</Typography>
         <Typography color={titleColor}>{title}</Typography>
-        {acceptsFile && (
+        {acceptsFile != null && (
           <Box>
             <Typography variant='caption' color='text.secondary' display='inline-block'>
               Supports:
@@ -108,14 +108,20 @@ export const FileDropzoneBody = (props: FileDropzoneBodyProps) => {
       <Divider
         sx={(t) => ({
           width: '80%',
-          [`&::before, &::after`]: {
+          '&::before, &::after': {
             border: disabled ? `0.1px solid ${t.palette.text.disabled}` : '0.1px solid gray',
           },
         })}
       >
         <Typography color={disabled ? 'text.disabled' : 'text.primary'}>OR</Typography>
       </Divider>
-      <Button disabled={disabled} variant='outlined' color={isError ? "error" : undefined} onClick={openFileSelector} className='upload-button'>
+      <Button
+        disabled={disabled}
+        variant='outlined'
+        color={isError ? 'error' : undefined}
+        onClick={openFileSelector}
+        className='upload-button'
+      >
         Browse files
       </Button>
     </Stack>

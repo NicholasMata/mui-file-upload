@@ -1,13 +1,13 @@
 import { Fade, Box } from '@mui/material';
 import { useRejectedFileManager, FileDropzone, FileDropzoneInputBody } from '../FileDropzone';
 import { FileUploadResults } from './FileUploadResults';
-import { useFileUploaderManager, useFileUploader, FileUploaderObservers } from '../../hooks';
-import { BaseFileUploadProps } from './types';
-import { useMemo } from 'react';
+import { useFileUploaderManager, useFileUploader, type FileUploaderObservers } from '../../hooks';
+import { type BaseFileUploadProps } from './types';
+import { type ReactNode, useMemo } from 'react';
 
 export type SingleFileUploadProps<Response = string> = BaseFileUploadProps<Response>;
 
-export const SingleFileUpload = <Response = string,>(props: SingleFileUploadProps<Response>) => {
+export const SingleFileUpload = <Response = string,>(props: SingleFileUploadProps<Response>): ReactNode => {
   const {
     uploadService,
     acceptsOnly,
@@ -52,8 +52,8 @@ export const SingleFileUpload = <Response = string,>(props: SingleFileUploadProp
             disabled={disabled}
             sx={sx?.sx}
             allowsMultiple={false}
-            dragZoneSx={sx ? sx.dragZoneSx : () => ({ borderRadius: '5px' })}
-            dropZoneSx={sx ? sx.dropZoneSx : { borderRadius: '5px' }}
+            dragZoneSx={sx != null ? sx.dragZoneSx : () => ({ borderRadius: '5px' })}
+            dropZoneSx={sx != null ? sx.dropZoneSx : { borderRadius: '5px' }}
             onFilesAccepted={upload}
             onFilesRejected={addRejected}
             acceptsOnly={acceptsOnly}
@@ -67,7 +67,7 @@ export const SingleFileUpload = <Response = string,>(props: SingleFileUploadProp
           rejected={rejectedFiles}
           failed={fileUploads.failed}
           inProgress={fileUploads.inProgress}
-          successful={onSuccessfulUpload ? [] : fileUploads.successful}
+          successful={onSuccessfulUpload != null ? [] : fileUploads.successful}
           onRetry={upload}
           onDismissRejected={removeRejected}
           onRemoveFileUpload={removeFileUpload}

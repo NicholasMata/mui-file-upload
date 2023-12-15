@@ -1,14 +1,17 @@
 import { useCallback } from 'react';
-import { FileUploaderObservers } from './types';
-import { FileUpload } from '../types';
+import { type FileUploaderObservers } from './types';
+import { type FileUpload } from '../types';
 
-export type FileUploader<Response> = {
+export interface FileUploader<Response> {
   /** A function that can be called to upload a file or retry a failed file upload. */
   upload: (fileOrFileUpload: File | File[] | FileUpload<Response>) => void;
-};
+}
 
 /** A type for a function that can be called to upload a file and track it's progress. */
-export type FileUploadService<Response = string> = (file: File, onProgress: (progress: number) => void) => Promise<Response>;
+export type FileUploadService<Response = string> = (
+  file: File,
+  onProgress: (progress: number) => void
+) => Promise<Response>;
 
 export const useFileUploader = <Response = string>(
   networkService: FileUploadService<Response>,
@@ -29,7 +32,7 @@ export const useFileUploader = <Response = string>(
           }
         : { ...fileOrFileUpload, completed: false, failed: false, progress: 0 };
 
-      const onProgress = (progress: number) => {
+      const onProgress = (progress: number): void => {
         const updatedFileUpload: FileUpload<Response> = {
           ...fileUpload,
           progress,
@@ -37,7 +40,7 @@ export const useFileUploader = <Response = string>(
         onFileProgressUpdate(updatedFileUpload);
       };
 
-      const handleCompletion = (failed: boolean, responseBody?: Response) => {
+      const handleCompletion = (failed: boolean, responseBody?: Response): void => {
         const completedFileUpload: FileUpload<Response> = {
           ...fileUpload,
           progress: 100,
@@ -49,8 +52,12 @@ export const useFileUploader = <Response = string>(
       };
 
       networkService(fileUpload.file, onProgress)
-        .then((result) => handleCompletion(false, result))
-        .catch(() => handleCompletion(true));
+        .then((result) => {
+          handleCompletion(false, result);
+        })
+        .catch(() => {
+          handleCompletion(true);
+        });
       onFileUploadStart(fileUpload, isRetry);
     },
     [networkService, onFileUploadStart, onFileProgressUpdate, onFileUploadComplete]
@@ -58,7 +65,7 @@ export const useFileUploader = <Response = string>(
 
   const upload = useCallback(
     (p: File | File[] | FileUpload<Response>) => {
-      let itemsToUpload: (File | FileUpload<Response>)[];
+      let itemsToUpload: Array<File | FileUpload<Response>>;
       if (Array.isArray(p)) {
         itemsToUpload = p;
       } else {
@@ -74,7 +81,7 @@ export const useFileUploader = <Response = string>(
   };
 };
 
-function generateGUID() {
+function generateGUID(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     const r = (Math.random() * 16) | 0;
     const v = c === 'x' ? r : (r & 0x3) | 0x8;

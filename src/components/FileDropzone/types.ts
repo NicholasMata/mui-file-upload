@@ -1,12 +1,12 @@
-export type FileDropzoneDragActive = {
+export interface FileDropzoneDragActive {
   hasRejectedFiles: boolean;
-};
+}
 
-export type FileDropzoneState = {
+export interface FileDropzoneState {
   disabled: boolean;
   dragActive?: FileDropzoneDragActive;
   hasTooManyFiles: boolean;
-};
+}
 
 export enum FileDropzoneStatus {
   normal,
