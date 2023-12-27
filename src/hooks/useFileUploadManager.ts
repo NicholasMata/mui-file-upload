@@ -13,7 +13,7 @@ export interface FileUploadManager<Response = string> {
   handlers: FileUploaderObservers<Response>;
 }
 
-export const useFileUploaderManager = <Response = string>(): FileUploadManager<Response> => {
+export const useFileUploadManager = <Response = string>(): FileUploadManager<Response> => {
   const [fileUploads, setFileUploads] = useState<Array<FileUpload<Response>>>([]);
 
   const inProgress = fileUploads.filter((fu) => !fu.completed);

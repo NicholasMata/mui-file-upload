@@ -37,12 +37,12 @@ The following are high level components, which can be used "out-of-box" with lit
 #### MultiFileUpload
 
 This uncontrolled component can be used to upload multiple files.
-![Multi File Upload Screenshot](sample_pics/FileDropzone.png)
+![Multi File Upload Screenshot](./sample_pics/FileDropzone.png)
 
 #### SingleFileUpload
 
 This uncontrolled component can be used to upload a single file.
-![Single File Upload  Screenshot](sample_pics/FileDropzone%20Input.png)
+![Single File Upload  Screenshot](./sample_pics/FileDropzone%20Input.png)
 
 ### Low Level
 

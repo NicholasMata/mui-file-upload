@@ -1,7 +1,7 @@
 import { Fade, Box } from '@mui/material';
 import { useRejectedFileManager, FileDropzone, FileDropzoneInputBody } from '../FileDropzone';
 import { FileUploadResults } from './FileUploadResults';
-import { useFileUploaderManager, useFileUploader, type FileUploaderObservers } from '../../hooks';
+import { useFileUploadManager, useFileUploader, type FileUploaderObservers } from '../../hooks';
 import { type BaseFileUploadProps } from './types';
 import { type ReactNode, useMemo } from 'react';
 
@@ -19,7 +19,7 @@ export const SingleFileUpload = <Response = string,>(props: SingleFileUploadProp
   } = props;
   const { rejectedFiles, addRejected, removeRejected } = useRejectedFileManager();
 
-  const { fileUploads, removeFileUpload, handlers } = fileManager ?? useFileUploaderManager<Response>();
+  const { fileUploads, removeFileUpload, handlers } = fileManager ?? useFileUploadManager<Response>();
   const mergedObservers = useMemo(
     (): FileUploaderObservers<Response> => ({
       onFileUploadStart: handlers.onFileUploadStart,

@@ -1,0 +1,8 @@
+{
+  "label": "Low Level - Advanced",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Low level components are used to form high level components. They are building blocks."
+  }
+}

@@ -2,7 +2,7 @@ import { type Meta, type StoryObj } from '@storybook/react';
 import { type ReactNode, type ComponentProps, useMemo } from 'react';
 import { useFakeService } from '../../stories/utils';
 import { SingleFileUpload } from '.';
-import { useFileUploaderManager } from '../../hooks';
+import { useFileUploadManager } from '../../hooks';
 import { FileDropzoneInputBody, FileDropzoneStatus, useFileDropzoneContext } from '../FileDropzone';
 import { Link, Stack, type Theme, Typography, alpha } from '@mui/material';
 import { FileDropzoneStatusUtils, FileDropzoneUtils, type StatusColorOptions } from '../../utils';
@@ -45,7 +45,7 @@ type Story = StoryObj<AllProps>;
 export const Default: Story = {
   render: (args) => {
     const uploadService = useFakeService({ failureRate: args.failureRate });
-    const fileManager = useFileUploaderManager<void>();
+    const fileManager = useFileUploadManager<void>();
     return (
       <Stack alignItems='start'>
         <SingleFileUpload
@@ -68,7 +68,7 @@ export const CustomTitle: Story = {
 
   render: (args) => {
     const uploadService = useFakeService({ failureRate: args.failureRate });
-    const fileManager = useFileUploaderManager<void>();
+    const fileManager = useFileUploadManager<void>();
     return (
       <SingleFileUpload
         disabled={args.disabled}
@@ -111,13 +111,13 @@ const CustomZoneBody = (): ReactNode => {
 export const CustomBody: Story = {
   render: (args) => {
     const uploadService = useFakeService({ failureRate: args.failureRate });
-    const fileManager = useFileUploaderManager<void>();
+    const fileManager = useFileUploadManager<void>();
     const backgroundColor = (t: Theme): StatusColorOptions => ({
       default: alpha(t.palette.secondary.main, DEFAULT_BACKGROUND_ALPHA),
       disabled: alpha(t.palette.text.disabled, DEFAULT_BACKGROUND_ALPHA),
       dragActive: alpha(t.palette.secondary.main, DEFAULT_DRAG_ACTIVE_BACKGROUND_ALPHA),
     });
-    const borderColor = (t: Theme): boolean => ({
+    const borderColor = (t: Theme): StatusColorOptions => ({
       default: alpha(t.palette.secondary.main, DEFAULT_BORDER_ALPHA),
       disabled: alpha(t.palette.text.disabled, DEFAULT_BORDER_ALPHA),
       dragActive: alpha(t.palette.secondary.main, DEFAULT_DRAG_ACTIVE_BORDER_ALPHA),
