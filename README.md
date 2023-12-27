@@ -1,9 +1,10 @@
 <div align="center">
     <h3>Material UI File Upload</h3>
+    <img alt="npm" src="https://img.shields.io/npm/v/mui-file-upload"/>
     <img alt="npm" src="https://img.shields.io/npm/dt/mui-file-upload"/>
     <img alt="NPM" src="https://img.shields.io/npm/l/mui-file-upload"/>
     <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/mui-file-upload"/>
-    <p><b>File Dropzone and File Upload Components</b><br/>This package is built on top of <a href="https://mui.com">MUI</a></p>
+    <p><b>File Dropzone and File Upload Components</b><br/>Built on top of <a href="https://mui.com">MUI</a></p>
     <h4><a href="https://nicholasmata.github.io/mui-file-upload">Documentation</a></h4>
 </div>
 

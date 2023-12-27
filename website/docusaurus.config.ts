@@ -44,8 +44,10 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    colorMode: {
+      respectPrefersColorScheme: true,
+    },
+    image: 'img/mui-file-upload-logo.png',
     navbar: {
       title: 'mui-file-upload',
       logo: {

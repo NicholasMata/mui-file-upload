@@ -11,19 +11,19 @@ interface FeatureItem {
 const FeatureList: FeatureItem[] = [
   {
     title: 'Easy to Use',
-    image: '/img/feature-easy.png',
+    image: 'img/feature-easy.png',
     description: (
       <>A simple and easy way to add file upload to your projects. Components ready to use of the out-of-the-box.</>
     ),
   },
   {
     title: 'Customizable',
-    image: '/img/feature-customizable.png',
+    image: 'img/feature-customizable.png',
     description: <>Though it is easy to use the library it is also highly flexible and customizable.</>,
   },
   {
     title: 'Beautiful',
-    image: '/img/feature-beautiful.png',
+    image: 'img/feature-beautiful.png',
     description: <>Built on top of Material UI, the component is beautiful out-of-the-box.</>,
   },
 ];

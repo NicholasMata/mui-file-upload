@@ -29,7 +29,7 @@ function HomepageHeader(): JSX.Element {
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
   return (
-    <Layout title={`Hello from ${siteConfig.title}`} description='Description will go into a meta tag in <head />'>
+    <Layout title={siteConfig.title} description='Documentation for mui-file-upload'>
       <HomepageHeader />
       <main>
         <HomepageFeatures />
