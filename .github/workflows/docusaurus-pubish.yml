@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Docusaurus Deployment
 
 on:
   push:
