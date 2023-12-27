@@ -1,0 +1,27 @@
+# FileUploadManager
+
+Used to manage multiple file uploads. [useFileUploadManager](../hooks/useFileUploadManager.mdx) can be used to create a 
+FileUploadManager.
+
+Used by [MultiFileUpload](../components/basics/MultiFileUpload) to manage the FileUploads.
+
+#### fileUploads
+
+```ts
+{
+  inProgress: Array<FileUpload<Response>>;
+  successful: Array<FileUpload<Response>>;
+  failed: Array<FileUpload<Response>>;
+  length: number;
+}
+```
+
+> An object containing the FileUploads in there different states.
+
+#### removeFileUpload <sup>(fileUploadToRemove: [FileUpload\<Response\>](./FileUpload)) => void</sup>
+> A function which can be called to remove a FileUpload from `fileUploads`
+
+#### handlers <sup>[FileUploaderObservers\<Response\>](./FileUploaderObservers)</sup>
+> A set of functions which is used to rely FileUpload status information to the manager.
+
+

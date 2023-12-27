@@ -1,33 +1,18 @@
-# Material UI File Upload
+<div align="center">
+    <h3>Material UI File Upload</h3>
+    <img alt="npm" src="https://img.shields.io/npm/dt/mui-file-upload"/>
+    <img alt="NPM" src="https://img.shields.io/npm/l/mui-file-upload"/>
+    <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/mui-file-upload"/>
+    <p><b>File Dropzone and File Upload Components</b><br/>This package is built on top of <a href="https://mui.com">MUI</a></p>
+    <h4><a href="https://nicholasmata.github.io/mui-file-upload">Documentation</a></h4>
+</div>
 
-> <b>NOT AN OFFICAL MUI LIBRARY</b>
+> **NOT AN OFFICAL MUI LIBRARY**
 
-Provides components and hooks to upload files which has a Material UI style.
+![Multi File Upload Screenshot](./sample_pics/FileDropzone.png)
 
-This package is built on [MUI](https://mui.com) and <b>is just meant to be temporary until MUI makes equalivant components</b> Which is on their [roadmap](https://mui.com/material-ui/discover-more/roadmap/) as Dropzone and File Upload.
+![Single File Upload  Screenshot](./sample_pics/FileDropzone%20Input.png)
 
-## Installation
+**It is just meant to be temporary until MUI makes equalivant components**
 
-You can install the package using npm or yarn
-
-```
-npm install --save mui-file-upload
-```
-
-```
-yarn install --save mui-file-upload
-```
-
-## Overview
-
-Currently the package isn't a simple component. It is consists of multiple components you can put together to build a custom file upload experience. Please view the storybook for some real world components.
-
-![Multi File Upload Screenshot](sample_pics/FileDropzone.png)
-
-![Single File Upload  Screenshot](sample_pics/FileDropzone%20Input.png)
-
-## High customizable
-
-Look at storybook sample code but components and hooks allow for highly customizable UI with the functionality of handling file uploads and file drops easily.
-
-_More details and example will be here in the future._
+Which is on their [roadmap](https://mui.com/material-ui/discover-more/roadmap/) as Dropzone and File Upload.

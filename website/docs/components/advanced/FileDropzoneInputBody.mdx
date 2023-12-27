@@ -1,0 +1,43 @@
+
+import { CustomFileDropzoneInputBodyUsage } from "@site/src/components/FileDropzoneUsage"
+import FileDropzoneSharedProps from "./_FileDropzoneBodyProps.md"
+
+# FileDropzoneInputBody
+
+This component uses [useFileDropzoneContext](../../hooks/useFileDropzoneContext) to provide the default body for 
+[SingleFileUpload](../basics/SingleFileUpload), it can also be used for [MultiFileUpload](../basics/MultiFileUpload). 
+
+:::note
+You can use this component to customize labels used in [MultiFilepload](../basics/MultiFileUpload) or [SingleFileUpload](../basics/SingleFileUpload).
+:::
+
+## Usage
+<CustomFileDropzoneInputBodyUsage />
+<br/>
+```jsx
+import { useXMLHttpService, SingleFileUpload, FileDropzoneInputBody } from 'mui-file-upload';
+
+export const Component = () => {
+  const uploadService = useXMLHttpService(...);
+  return <SingleFileUpload
+    uploadService={uploadService}
+    body={
+      <FileDropzoneInputBody
+        title='or Custom Title'
+        dropTitle='or Custom Drop Title'
+        disabledTitle='Custom Disabled Title'
+        dragRejectedTitle='Custom Rejected Title'
+        fileOverloadTitle='Custom Too Many Files'
+      />
+    }
+  />
+}
+```
+
+## Optional Props
+<FileDropzoneSharedProps />
+
+#### sx <sup>SxProps\<Theme\></sup>
+
+> Can be used to customize style of the body. It is recommend to modify the sx of the 
+> parent component (aka FileDropzone, SingleFileUpload, MultiFileUpload) to add things like border, background, etc.

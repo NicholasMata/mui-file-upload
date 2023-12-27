@@ -1,0 +1,48 @@
+# FileDropzone
+:::note
+This component is the most important in the whole library.
+:::
+
+This is what captures files being dragged over it. Both [MultiFileUpload](../basics/MultiFileUpload) and
+[SingleFileUpload](../basics/SingleFileUpload) are built off this component.
+
+*The hope is that others will take this component and make their own components.*
+
+## Required Props
+
+#### onFilesAccepted <sup>(files: File[]) => void</sup>
+> A function that is called when valid files are dragged and then dropped onto the component.
+>
+> "Valid files" are determined by `acceptsOnly` prop. If no `acceptsOnly` is provided all files are valid.
+
+#### onFilesRejected <sup>(files: File[]) => void</sup>
+> A function that is called when invalid files are dragged and then dropped onto the component.
+>
+> "Invalid files" are determined by `acceptsOnly` prop. If no `acceptsOnly` this is never called. 
+
+## Optional Props
+
+#### allowsMultiple <sup>boolean</sup>
+> Whether of not the FileDropzone can handle multiple files
+>
+> Default: **true**
+
+#### disabled <sup>boolean</sup>
+> Whether the FileDropzone is disabled or not
+>
+> Default: **false**
+
+#### acceptsOnly <sup>string</sup>
+> An accepts string indicating that the FileDropzone should only accept specific files
+
+#### sx <sup>SxProps\<Theme\></sup>
+> Allows defining system overrides as well as additional CSS styles to the applied to the top level container
+
+#### dragZoneSx <sup>(state: [FileDropzoneState](../../types/FileDropzoneState)) => SxProps\<Theme\></sup>
+> Allows defining system overrides as well as additional CSS styles to the applied to container
+> around children this typically contains borders, background color, etc.
+
+#### dropZoneSx <sup>SxProps\<Theme\></sup>
+> Allows defining system overrides as well as additional CSS styles to the container which the user is allowed to drop files onto
+> By default has no visible styling
+

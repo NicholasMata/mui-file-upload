@@ -13,7 +13,7 @@ import {
 import { FileDropzoneStatus } from './types';
 
 export interface FileDropzoneBodyProps {
-  /** The title of the zone. */
+  /** The default title of the zone. */
   title?: ReactNode;
   /**
    * The title of the zone that will be displayed when something can be dropped on it.

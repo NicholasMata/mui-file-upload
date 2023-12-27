@@ -1,0 +1,30 @@
+import { SampleMultiFileUpload } from "@site/src/components/FileUploadUsage"
+import OptionalProps from "./_FileUploadOptionalProps.md"
+import RequiredProps from "./_FileUploadRequiredProps.md"
+
+# MultiFileUpload
+
+This high level component provides a dropzone where multiple files can be dragged onto and then uploaded.<br/>
+It also provides the user the ability to browse if they don't prefer to drag and drop files.
+
+## Usage
+
+<SampleMultiFileUpload />
+
+```jsx
+import { useXMLHttpService, MultiFileUpload } from 'mui-file-upload';
+
+export const Component = () => {
+  const uploadService = useXMLHttpService(...);
+  return <MultiFileUpload uploadService={uploadService} />
+}
+```
+
+## Required Props
+
+<RequiredProps />
+
+## Optional Props
+
+<OptionalProps />
+

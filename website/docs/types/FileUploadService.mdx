@@ -1,0 +1,17 @@
+# FileUploadService
+
+```tsx
+type FileUploadService<Response = string> = (
+  file: File,
+  onProgress: (progress: number) => void
+) => Promise<Response>
+
+```
+
+An async function that can be called with a File and a function to track the progress of the upload.
+
+Review [useXMLHttpService](../hooks/useXMLHttpService) for an existing implementation.
+
+This type is meant as an abstraction so you can use any http / socket connection library.
+An example being [useXMLHttpService](../hooks/useXMLHttpService) could be recreated functionality wise with 
+something like [axios](https://axios-http.com).

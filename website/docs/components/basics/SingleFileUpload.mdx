@@ -1,0 +1,32 @@
+import { SampleSingleFileUpload } from "@site/src/components/FileUploadUsage"
+import OptionalProps from "./_FileUploadOptionalProps.md"
+import RequiredProps from "./_FileUploadRequiredProps.md"
+
+# SingleFileUpload
+
+This high level component provides a dropzone where a single file can be dragged onto and then uploaded.<br/>
+It also provides the user the ability to browse if they don't prefer to drag and drop files.
+
+## Usage
+
+<SampleSingleFileUpload />
+
+<br/>
+
+```jsx
+import { useXMLHttpService, SingleFileUpload } from 'mui-file-upload';
+
+export const Component = () => {
+  const uploadService = useXMLHttpService(...);
+  return <SingleFileUpload uploadService={uploadService} />
+}
+```
+
+## Required Props
+
+<RequiredProps />
+
+## Optional Props
+
+<OptionalProps />
+

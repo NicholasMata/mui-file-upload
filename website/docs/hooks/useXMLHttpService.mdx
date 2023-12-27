@@ -1,0 +1,36 @@
+# useXMLHttpService
+
+This hook is used to provide a uploadService to your FileUpload components.
+
+:::info
+The name of this hook is a bit of a misnamor as it has nothing to do with XML specifically. Rather the name indicates that it uses
+the [XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest). 
+The reason it uses [XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) over 
+something like `fetch` is because it allows for tracking upload progress.
+:::
+
+Returns: [FileUploadService\<Response\>](../types/FileUploadService)
+
+## Required Arguments
+
+#### endpoint <sup>string</sup>
+> The endpoint where the file upload api exists.
+
+## Optional Arguments 
+
+
+#### method <sup>string</sup>
+> The http method for the file upload api, aka "POST", "PUT", etc.
+>
+> Default: **"POST"**
+
+#### modifyRequest <sup>(xhr: XMLHttpRequest) => Promise\<void\> | void</sup>
+:::info
+This is useful when you need add headers to the request. Such as **Authorization** header
+:::
+> A function that can be used to modify the request. 
+
+#### responseTransformer <sup>(responseText: string) => Response</sup>
+> Used to transform response body to whatever you need. Typically *Response* type is a string indicating a url point to the file which has been uploaded.
+> This allows you to take whatever your response is for the API (JSON, XML, etc) and get the link to the file which was uploaded.
+

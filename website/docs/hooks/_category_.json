@@ -1,0 +1,8 @@
+{
+  "label": "Hooks",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "React Hooks in this library used to save you time in development."
+  }
+}

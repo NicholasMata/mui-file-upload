@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import { useFileUploaderManager, useFileUploader, type FileUploaderObservers } from '../../hooks';
+import { useFileUploadManager, useFileUploader, type FileUploaderObservers } from '../../hooks';
 import { useRejectedFileManager, FileDropzone, FileDropzoneBody } from '../FileDropzone';
 import { type BaseFileUploadProps } from './types';
 import { FileUploadResults } from './FileUploadResults';
@@ -11,7 +11,7 @@ export const MultiFileUpload = <Response = string,>(props: MultiFileUploadProps<
   const { uploadService, acceptsOnly, onSuccessfulUpload, fileManager, body, sx, disabled } = props;
   const { rejectedFiles, addRejected, removeRejected } = useRejectedFileManager();
 
-  const { fileUploads, removeFileUpload, handlers } = fileManager ?? useFileUploaderManager<Response>();
+  const { fileUploads, removeFileUpload, handlers } = fileManager ?? useFileUploadManager<Response>();
   const mergedObservers = useMemo(
     (): FileUploaderObservers<Response> => ({
       onFileUploadStart: handlers.onFileUploadStart,
