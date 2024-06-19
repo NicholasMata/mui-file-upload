@@ -35,7 +35,7 @@ All the following props are optional meaning they can be undefined.
 #### body <sup>ReactNode</sup>
 > A custom body to render inside the dropzone. It is highly recommended you use the following hook to get FileDropZoneContext [useFileDropzoneContext](../../hooks/useFileDropzoneContext).
 >
-> Default: [\<FileDropZoneBody /\>](../advanced/FileDropZoneBody)
+> Default: [\<FileDropZoneBody /\>](../advanced/FileDropzoneBody)
 
 #### onSuccessfulUpload <sup>(fileUpload: FileUpload\<Response\>) => void</sup>
 > Called when a upload was successful. If this is provided then successful file uploads need to be rendered externally.

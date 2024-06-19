@@ -20,6 +20,9 @@ function HomepageHeader(): JSX.Element {
           <Link className='button button--secondary button--lg' to='/docs/getting-started'>
             Get Started
           </Link>
+          <Link className='button button--lg' href='https://nicholasmata.github.io/mui-file-upload/storybook'>
+            Storybook
+          </Link>
         </div>
       </div>
     </header>

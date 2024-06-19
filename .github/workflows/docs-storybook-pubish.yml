@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   build-deploy:
-    name: Deploy Storybook to Github Pages
+    name: Deploy Docs and Storybook to Github Pages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
