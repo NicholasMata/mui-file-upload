@@ -41,7 +41,11 @@ const FileUploadResultsInner = <Response = string,>(
       </Grow>
     ))}
     {failed.map((f) => (
-      <FileUploadCard key={f.id} fileUpload={f} actions={<FileUploadCardActions onRemove={() => onRemoveFileUpload?.(f)} onRetry={() => onRetry?.(f)} />} />
+      <FileUploadCard
+        key={f.id}
+        fileUpload={f}
+        actions={<FileUploadCardActions onRemove={() => onRemoveFileUpload?.(f)} onRetry={() => onRetry?.(f)} />}
+      />
     ))}
     {inProgress.map((f) => (
       <Fade in={true} key={f.id}>

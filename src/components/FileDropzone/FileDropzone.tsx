@@ -111,7 +111,7 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleDrag: DragEventHandler<HTMLElement> = function (e) {
+  const handleDrag: DragEventHandler<HTMLDivElement> = function (e) {
     e.preventDefault();
     e.stopPropagation();
     if (e.type === 'dragenter' || e.type === 'dragover') {
@@ -214,14 +214,7 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
   const customDragZoneSx = useMemo(() => dragZoneSx?.(state) ?? null, [state, dragZoneSx]);
 
   return (
-    <Box
-      component='form'
-      onDragEnter={handleDrag}
-      onSubmit={(e) => {
-        e.preventDefault();
-      }}
-      sx={[defaultSx, ...(Array.isArray(sx) ? sx : [sx]), requiredDefaultSx]}
-    >
+    <Box sx={[defaultSx, ...(Array.isArray(sx) ? sx : [sx]), requiredDefaultSx]} onDragEnter={handleDrag}>
       <input
         disabled={disabled}
         ref={inputRef}

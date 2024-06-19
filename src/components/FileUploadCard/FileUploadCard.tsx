@@ -21,6 +21,7 @@ export const FileUploadCard = <FileUploadResponse = string,>({
   actions,
 }: FileUploadCardProps<FileUploadResponse>): ReactNode => {
   const status = FileUploadUtils.formatStatus(fileUpload);
+
   return (
     <Card variant={variant}>
       <CardHeader

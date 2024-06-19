@@ -21,7 +21,7 @@ export interface BaseFileUploadProps<Response = string> {
   disabled?: boolean;
 }
 
-interface FileUploadSx {
+export interface FileUploadSx {
   /** Allows defining system overrides as well as additional CSS styles for the root container. **/
   sx?: SxProps<Theme>;
   /** Allows defining system overrides as well as additional CSS styles for the drag zone container. **/
