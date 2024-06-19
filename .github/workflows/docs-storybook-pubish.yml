@@ -1,0 +1,45 @@
+name: Doc and Storybook Deployment
+
+on:
+  push:
+    branches:
+      - main
+    # Review gh actions docs if you want to further define triggers, paths, etc
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
+
+permissions:
+  contents: write
+
+jobs:
+  build-deploy:
+    name: Deploy Storybook to Github Pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/Hydrogen'
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm install --frozen-lockfile
+
+      - name: Install Docusaurus Dependencies
+        working-directory: ./website
+        run: npm install --frozen-lockfile
+
+      - name: Build Docusaurus
+        working-directory: ./website
+        run: npm run build
+
+      - name: Build Storybook
+        run: npm run build-storybook -- -o website/build/storybook
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./website/build
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
+
