@@ -1,7 +1,7 @@
 import { Box, Fade, Grow, Stack, type StackProps } from '@mui/material';
 import { FileUploadCard, FileUploadCardActions } from '../FileUploadCard';
 import { RejectedFileUploadAlert } from '../RejectedFileUploadAlert';
-import { type Ref, forwardRef, type ReactNode } from 'react';
+import { type Ref, forwardRef } from 'react';
 import { type FileUpload } from '../../types';
 
 type Props<Response = string> = {
@@ -33,7 +33,7 @@ const FileUploadResultsInner = <Response = string,>(
     ...stackProps
   }: Props<Response>,
   ref?: Ref<HTMLDivElement>
-): ReactNode => (
+): JSX.Element => (
   <Stack spacing={1} {...stackProps} ref={ref}>
     {rejected.map((f, i) => (
       <Grow in key={`rejected-${i}`}>

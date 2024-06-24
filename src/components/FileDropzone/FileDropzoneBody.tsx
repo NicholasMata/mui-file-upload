@@ -27,7 +27,7 @@ export interface FileDropzoneBodyProps {
   disabledTitle?: ReactNode | ((dragActive: boolean) => ReactNode);
 }
 
-export const FileDropzoneBody: React.FC<FileDropzoneBodyProps> = (props: FileDropzoneBodyProps) => {
+export const FileDropzoneBody: React.FC<FileDropzoneBodyProps> = (props: FileDropzoneBodyProps): JSX.Element => {
   const { dropzoneState, openFileSelector, accept, allowsMultiple } = useFileDropzoneContext();
   const { disabled } = dropzoneState;
 
