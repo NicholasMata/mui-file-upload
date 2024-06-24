@@ -29,7 +29,7 @@ export interface FileDropzoneInputBodyProps {
   sx?: SxProps<Theme>;
 }
 
-export const FileDropzoneInputBody: React.FC<FileDropzoneInputBodyProps> = (props: FileDropzoneInputBodyProps) => {
+export const FileDropzoneInputBody: React.FC<FileDropzoneInputBodyProps> = (props: FileDropzoneInputBodyProps): JSX.Element => {
   const { dropzoneState, openFileSelector, allowsMultiple } = useFileDropzoneContext();
   const { disabled } = dropzoneState;
   const {

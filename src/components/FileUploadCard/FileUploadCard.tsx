@@ -19,7 +19,7 @@ export const FileUploadCard = <FileUploadResponse = string,>({
   fileUpload,
   variant = 'outlined',
   actions,
-}: FileUploadCardProps<FileUploadResponse>): ReactNode => {
+}: FileUploadCardProps<FileUploadResponse>): JSX.Element => {
   const status = FileUploadUtils.formatStatus(fileUpload);
   return (
     <Card variant={variant}>
@@ -44,7 +44,7 @@ export const FileUploadCard = <FileUploadResponse = string,>({
 
 type LinearProgressWithLabelProps = LinearProgressProps & { value: number };
 
-const LinearProgressWithLabel = (props: LinearProgressWithLabelProps): ReactNode => (
+const LinearProgressWithLabel = (props: LinearProgressWithLabelProps): JSX.Element => (
   <Box sx={{ display: 'flex', alignItems: 'center' }}>
     <Box sx={{ width: '100%', mr: 1 }}>
       <LinearProgress variant='determinate' {...props} />

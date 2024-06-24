@@ -17,7 +17,7 @@ export const FileUploadCardActions = ({
   onRetry,
   removeIcon = <Delete />,
   onRemove,
-}: FileUploadCardActionProps): ReactNode => {
+}: FileUploadCardActionProps): JSX.Element => {
   return (
     <Stack direction='row'>
       {onRetry != null && <IconButton onClick={onRetry}>{retryIcon}</IconButton>}

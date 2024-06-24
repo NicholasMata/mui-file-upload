@@ -1,10 +1,9 @@
 import { FileDropzoneBody, FileDropzoneInputBody, MultiFileUpload, SingleFileUpload } from 'mui-file-upload';
-import { type ReactNode } from 'react';
 import { useColorMode } from '@docusaurus/theme-common';
 import { ThemeProvider, createTheme } from '@mui/material';
 import { useFakeService } from './FileUploadUsage';
 
-export const CustomFileDropzoneBodyUsage = (): ReactNode => {
+export const CustomFileDropzoneBodyUsage = (): JSX.Element => {
   const uploadService = useFakeService({});
   const { colorMode } = useColorMode();
   const theme = createTheme({ palette: { mode: colorMode } });
@@ -26,7 +25,7 @@ export const CustomFileDropzoneBodyUsage = (): ReactNode => {
   );
 };
 
-export const CustomFileDropzoneInputBodyUsage = (): ReactNode => {
+export const CustomFileDropzoneInputBodyUsage = (): JSX.Element => {
   const uploadService = useFakeService({});
   const { colorMode } = useColorMode();
   const theme = createTheme({ palette: { mode: colorMode } });

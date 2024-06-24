@@ -3,11 +3,11 @@ import { useRejectedFileManager, FileDropzone, FileDropzoneInputBody } from '../
 import { FileUploadResults } from './FileUploadResults';
 import { useFileUploadManager, useFileUploader, type FileUploaderObservers } from '../../hooks';
 import { type BaseFileUploadProps } from './types';
-import { type ReactNode, useMemo } from 'react';
+import { useMemo } from 'react';
 
 export type SingleFileUploadProps<Response = string> = BaseFileUploadProps<Response>;
 
-export const SingleFileUpload = <Response = string,>(props: SingleFileUploadProps<Response>): ReactNode => {
+export const SingleFileUpload = <Response = string,>(props: SingleFileUploadProps<Response>): JSX.Element => {
   const {
     uploadService,
     acceptsOnly,

@@ -1,9 +1,8 @@
 import { type FileUploadService, MultiFileUpload, SingleFileUpload } from 'mui-file-upload';
-import { type ReactNode } from 'react';
 import { useColorMode } from '@docusaurus/theme-common';
 import { ThemeProvider, createTheme } from '@mui/material';
 
-export const SampleMultiFileUpload = (): ReactNode => {
+export const SampleMultiFileUpload = (): JSX.Element => {
   const uploadService = useFakeService({});
   const { colorMode } = useColorMode();
   const theme = createTheme({ palette: { mode: colorMode } });
@@ -14,7 +13,7 @@ export const SampleMultiFileUpload = (): ReactNode => {
   );
 };
 
-export const SampleSingleFileUpload = (): ReactNode => {
+export const SampleSingleFileUpload = (): JSX.Element => {
   const uploadService = useFakeService({});
   const { colorMode } = useColorMode();
   const theme = createTheme({ palette: { mode: colorMode } });
