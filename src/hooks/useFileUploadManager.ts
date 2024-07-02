@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { type FileUploaderObservers } from './types';
 import { type FileUpload } from '../types';
 
-export interface FileUploadManager<Response = string> {
+export type FileUploadManager<Response = string> = {
   fileUploads: {
     inProgress: Array<FileUpload<Response>>;
     successful: Array<FileUpload<Response>>;
@@ -11,7 +11,7 @@ export interface FileUploadManager<Response = string> {
   };
   removeFileUpload: (fileUploadToRemove: FileUpload<Response>) => void;
   handlers: FileUploaderObservers<Response>;
-}
+};
 
 export const useFileUploadManager = <Response = string>(): FileUploadManager<Response> => {
   const [fileUploads, setFileUploads] = useState<Array<FileUpload<Response>>>([]);
@@ -36,7 +36,7 @@ export const useFileUploadManager = <Response = string>(): FileUploadManager<Res
         setFileUploads(update(completedFileUpload));
       },
     }),
-    [setFileUploads, append, update]
+    []
   );
 
   const removeFileUpload = (fileUploadToRemove: FileUpload<Response>): void => {

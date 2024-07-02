@@ -1,4 +1,4 @@
-import { Box, type SxProps, type Theme, alpha } from '@mui/material';
+import { Box, type SxProps, type Theme, alpha, useForkRef } from '@mui/material';
 import {
   type ChangeEventHandler,
   type DragEventHandler,
@@ -8,13 +8,14 @@ import {
   useMemo,
   useRef,
   useState,
+  forwardRef,
 } from 'react';
 import { Accept, FileDropzoneUtils } from '../../utils';
 import { FileDropzoneProvider } from './FileDropzoneContext';
 import { type FileDropzoneState } from './types';
 import { DEFAULT_BACKGROUND_ALPHA, DEFAULT_BORDER_ALPHA, DEFAULT_DRAG_ACTIVE_BACKGROUND_ALPHA } from './contants';
 
-export interface FileDropzoneProps {
+export type FileDropzoneProps = {
   /** Whether of not the FileDropzone can handle multiple files. */
   allowsMultiple?: boolean;
   /** An accepts string indicating that the FileDropzone should only accept specific files. */
@@ -37,7 +38,7 @@ export interface FileDropzoneProps {
   onFilesRejected: (files: File[]) => void;
   /** Whether the FileDropzone is disabled or not. Default: false */
   disabled?: boolean;
-}
+};
 
 const defaultSx: SxProps<Theme> = {
   display: 'flex',
@@ -78,119 +79,133 @@ const defaultDragZoneOverloadSx: SxProps<Theme> = (t) => ({
   backgroundColor: alpha(t.palette.error.main, DEFAULT_BACKGROUND_ALPHA),
 });
 
-const requiredDefaultDropZoneSx: SxProps<Theme> = {
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-  top: '0px',
-  right: '0px',
-  bottom: '0px',
-  left: '0px',
-};
-
 const defaultDropZoneSx: SxProps<Theme> = {
   borderRadius: '1rem',
 };
 
 const defaultFileDropzoneState = (disabled: boolean): FileDropzoneState => ({ hasTooManyFiles: false, disabled });
 
-export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
-  allowsMultiple = true,
-  acceptsOnly,
-  sx,
-  dragZoneSx,
-  dropZoneSx,
-  onFilesAccepted,
-  onFilesRejected,
-  disabled = false,
-  children,
-}: PropsWithChildren<FileDropzoneProps>) => {
+export const FileDropzone = forwardRef(function FileDropzone(props: PropsWithChildren<FileDropzoneProps>, ref) {
+  const {
+    allowsMultiple = true,
+    acceptsOnly,
+    sx,
+    dragZoneSx,
+    dropZoneSx,
+    onFilesAccepted,
+    onFilesRejected,
+    disabled = false,
+    children,
+  } = props;
+
   const [state, setState] = useState<FileDropzoneState>(defaultFileDropzoneState(disabled));
 
   const accept = useMemo(() => (acceptsOnly !== undefined ? new Accept(acceptsOnly) : undefined), [acceptsOnly]);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleDrag: DragEventHandler<HTMLDivElement> = function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      const newState = {
-        dragActive: {
-          hasRejectedFiles: false,
-        },
-        disabled,
-        hasTooManyFiles: !allowsMultiple && e.dataTransfer.items.length > 1,
-      };
+  const handleRef = useForkRef(inputRef, ref);
 
-      if (accept !== undefined && e.dataTransfer.items.length > 0) {
-        const rejectedFiles = Array.from(e.dataTransfer.items).filter((f) => !accept.acceptsMimeType(f.type));
-        console.log('rejectedFiles', rejectedFiles);
-        newState.dragActive.hasRejectedFiles = rejectedFiles.length > 0;
-      }
-      const stateChanged = !FileDropzoneUtils.isSameState(state, newState);
-      if (stateChanged) setState(newState);
-    } else if (e.type === 'dragleave') {
-      setState(defaultFileDropzoneState(disabled));
-    }
-  };
+  const handleDrag: DragEventHandler<HTMLDivElement> = useCallback(
+    function (e) {
+      e.preventDefault();
+      e.stopPropagation();
 
-  const handleDrop: DragEventHandler<HTMLElement> = function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.dataTransfer.files.length === 0 || disabled) {
-      setState(defaultFileDropzoneState(disabled));
-      return;
-    }
-    handleFiles(e.dataTransfer.files);
-  };
+      if (e.type === 'dragenter' || e.type === 'dragover') {
+        const newState = {
+          dragActive: {
+            hasRejectedFiles: false,
+          },
+          disabled,
+          hasTooManyFiles: !allowsMultiple && e.dataTransfer.items.length > 1,
+        };
 
-  const handleChange: ChangeEventHandler<HTMLInputElement> = function (e) {
-    e.preventDefault();
-    const files = e.target.files;
-    if (files != null && files.length > 0) {
-      handleFiles(files);
-    }
-  };
-
-  const handleFiles = (files: FileList): void => {
-    const fileOverload = !allowsMultiple && files.length > 1;
-    if (fileOverload) {
-      setState((prev) => ({ ...prev, hasTooManyFiles: true }));
-      // Delay state change for animations.
-      setTimeout(() => {
-        setState(defaultFileDropzoneState(disabled));
-      }, 1000);
-      return;
-    }
-    let acceptedFiles: File[] = [];
-    let rejectedFiles: File[] = [];
-    if (accept !== undefined) {
-      const result = Array.from(files).reduce(
-        (acc, file) => {
-          if (accept.acceptsFilename(file.name)) {
-            acc.acceptedFiles.push(file);
-          } else {
-            acc.rejectedFiles.push(file);
+        if (accept !== undefined && e.dataTransfer.items.length > 0) {
+          const rejectedFiles = Array.from(e.dataTransfer.items).filter((f) => !accept.acceptsMimeType(f.type));
+          newState.dragActive.hasRejectedFiles = rejectedFiles.length > 0;
+        }
+        setState((prevState) => {
+          const isSameState = FileDropzoneUtils.isSameState(prevState, newState);
+          if (isSameState) {
+            return prevState;
           }
-          return acc;
-        },
-        { acceptedFiles: [] as File[], rejectedFiles: [] as File[] }
-      );
-      acceptedFiles = result.acceptedFiles;
-      rejectedFiles = result.rejectedFiles;
-    } else {
-      acceptedFiles = Array.from(files);
-    }
+          return newState;
+        });
+      } else if (e.type === 'dragleave') {
+        setState(defaultFileDropzoneState(disabled));
+      }
+    },
+    [allowsMultiple, disabled, accept]
+  );
 
-    if (acceptedFiles.length > 0) {
-      onFilesAccepted(acceptedFiles);
-    }
-    if (rejectedFiles.length > 0) {
-      onFilesRejected(rejectedFiles);
-    }
-    setState(defaultFileDropzoneState(disabled));
-  };
+  const handleFiles = useCallback(
+    (files: FileList): void => {
+      const fileOverload = !allowsMultiple && files.length > 1;
+      if (fileOverload) {
+        setState((prev) => ({ ...prev, hasTooManyFiles: true }));
+        // Delay state change for animations.
+        setTimeout(() => {
+          setState(defaultFileDropzoneState(disabled));
+        }, 1000);
+        return;
+      }
+
+      let acceptedFiles: File[] = [];
+      let rejectedFiles: File[] = [];
+      if (accept !== undefined) {
+        const result = Array.from(files).reduce(
+          (acc, file) => {
+            if (accept.acceptsFilename(file.name)) {
+              acc.acceptedFiles.push(file);
+            } else {
+              acc.rejectedFiles.push(file);
+            }
+            return acc;
+          },
+          { acceptedFiles: [] as File[], rejectedFiles: [] as File[] }
+        );
+        acceptedFiles = result.acceptedFiles;
+        rejectedFiles = result.rejectedFiles;
+      } else {
+        acceptedFiles = Array.from(files);
+      }
+
+      if (acceptedFiles.length > 0) {
+        onFilesAccepted(acceptedFiles);
+      }
+      if (rejectedFiles.length > 0) {
+        onFilesRejected(rejectedFiles);
+      }
+      setState(defaultFileDropzoneState(disabled));
+    },
+    [allowsMultiple, disabled, accept, onFilesAccepted, onFilesRejected]
+  );
+
+  const handleDrop: DragEventHandler<HTMLElement> = useCallback(
+    function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (e.dataTransfer.files.length === 0 || disabled) {
+        setState(defaultFileDropzoneState(disabled));
+        return;
+      }
+      console.log('handleDrop', e.dataTransfer.files);
+      handleFiles(e.dataTransfer.files);
+    },
+    [disabled, handleFiles]
+  );
+
+  const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
+    function (e) {
+      e.preventDefault();
+      const files = e.target.files;
+      if (files != null && files.length > 0) {
+        handleFiles(files);
+      }
+    },
+    [handleFiles]
+  );
 
   const openFileSelector = useCallback(() => {
     inputRef.current?.click();
@@ -214,23 +229,32 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
   const customDragZoneSx = useMemo(() => dragZoneSx?.(state) ?? null, [state, dragZoneSx]);
 
   return (
-    <Box sx={[defaultSx, ...(Array.isArray(sx) ? sx : [sx]), requiredDefaultSx]} onDragEnter={handleDrag}>
+    <Box
+      sx={[
+        defaultSx,
+        ...(Array.isArray(sx) ? sx : [sx]),
+        requiredDefaultSx,
+        defaultDropZoneSx,
+        ...(Array.isArray(dropZoneSx) ? dropZoneSx : [dropZoneSx]),
+      ]}
+      onDragEnter={handleDrag}
+      onDragLeave={handleDrag}
+      onDragOver={handleDrag}
+      onDrop={handleDrop}
+    >
       <input
         disabled={disabled}
-        ref={inputRef}
+        ref={handleRef}
         type='file'
         multiple={allowsMultiple}
         accept={acceptsOnly}
         onChange={handleChange}
         style={{ display: 'none' }}
       />
-      {/**
-       * I can no longer remember why I opted for this new box instead of putting it on parent
-       **/}
       <Box
         sx={[
           defaultDragZoneSx(disabled),
-          state.dragActive != null ? dragActiveSx : null,
+          state.dragActive != null ? dragActiveSx(disabled) : null,
           state.dragActive?.hasRejectedFiles === true ? dragActiveRejectedSx : null,
           ...(Array.isArray(customDragZoneSx) ? customDragZoneSx : [customDragZoneSx]),
           state.hasTooManyFiles ? defaultDragZoneOverloadSx : null,
@@ -238,25 +262,6 @@ export const FileDropzone: React.FC<PropsWithChildren<FileDropzoneProps>> = ({
       >
         <FileDropzoneProvider value={contextValue}>{children}</FileDropzoneProvider>
       </Box>
-      {/**
-       * I can no longer remember why I opted for this new box displaying
-       * when file is dragged over it instead of putting triggers on the parent box.
-       **/}
-      {state.dragActive != null && (
-        <Box
-          sx={[
-            defaultDropZoneSx,
-            ...(Array.isArray(dropZoneSx) ? dropZoneSx : [dropZoneSx]),
-            requiredDefaultDropZoneSx,
-          ]}
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-        />
-      )}
     </Box>
   );
-};
-
-export default FileDropzone;
+});

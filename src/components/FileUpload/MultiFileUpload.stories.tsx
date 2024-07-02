@@ -1,5 +1,5 @@
 import { type Meta, type StoryObj } from '@storybook/react';
-import { type ComponentProps, useMemo, type ReactNode } from 'react';
+import { type ComponentProps, useMemo } from 'react';
 import { useFakeService } from '../../stories/utils';
 import { MultiFileUpload } from './MultiFileUpload';
 import { FileDropzoneBody, useFileDropzoneContext } from '../FileDropzone';
@@ -11,12 +11,12 @@ import {
   DEFAULT_DRAG_ACTIVE_BORDER_ALPHA,
 } from '../FileDropzone/contants';
 
-interface StoryProps {
+type StoryProps = {
   failureRate: number;
   title: string;
   dropTitle: string;
   disabledTitle: string;
-}
+};
 
 type AllProps = ComponentProps<typeof MultiFileUpload<string>> & StoryProps;
 
@@ -73,7 +73,7 @@ export const CustomTitle: Story = {
   },
 };
 
-const CustomFileUploadZone = (): ReactNode => {
+const CustomFileUploadZone = (): JSX.Element => {
   const { dropzoneState } = useFileDropzoneContext();
   const title = useMemo(() => {
     if (dropzoneState.dragActive != null) {

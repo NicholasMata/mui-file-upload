@@ -12,7 +12,7 @@ import {
 } from './contants';
 import { FileDropzoneStatus } from './types';
 
-export interface FileDropzoneBodyProps {
+export type FileDropzoneBodyProps = {
   /** The default title of the zone. */
   title?: ReactNode;
   /**
@@ -25,9 +25,9 @@ export interface FileDropzoneBodyProps {
   dragRejectedTitle?: ReactNode;
   /** The title when the dropzone is disabled */
   disabledTitle?: ReactNode | ((dragActive: boolean) => ReactNode);
-}
+};
 
-export const FileDropzoneBody: React.FC<FileDropzoneBodyProps> = (props: FileDropzoneBodyProps) => {
+export const FileDropzoneBody = (props: FileDropzoneBodyProps): JSX.Element => {
   const { dropzoneState, openFileSelector, accept, allowsMultiple } = useFileDropzoneContext();
   const { disabled } = dropzoneState;
 

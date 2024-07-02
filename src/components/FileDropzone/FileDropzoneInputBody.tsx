@@ -11,7 +11,7 @@ import {
 import { FileDropzoneStatus } from './types';
 import { FileDropzoneStatusUtils } from '../../utils';
 
-export interface FileDropzoneInputBodyProps {
+export type FileDropzoneInputBodyProps = {
   /** The title of the input. Will be prefixed with "Click to upload " */
   title?: ReactNode;
   /**
@@ -27,9 +27,9 @@ export interface FileDropzoneInputBodyProps {
   disabledTitle?: ReactNode | ((dragActive: boolean) => ReactNode);
   /** The system prop that allows defining system overrides as well as additional CSS styles. */
   sx?: SxProps<Theme>;
-}
+};
 
-export const FileDropzoneInputBody: React.FC<FileDropzoneInputBodyProps> = (props: FileDropzoneInputBodyProps) => {
+export const FileDropzoneInputBody = (props: FileDropzoneInputBodyProps): JSX.Element => {
   const { dropzoneState, openFileSelector, allowsMultiple } = useFileDropzoneContext();
   const { disabled } = dropzoneState;
   const {

@@ -3,11 +3,13 @@ import { useFileUploadManager, useFileUploader, type FileUploaderObservers } fro
 import { useRejectedFileManager, FileDropzone, FileDropzoneBody } from '../FileDropzone';
 import { type BaseFileUploadProps } from './types';
 import { FileUploadResults } from './FileUploadResults';
-import { type ReactNode, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
 export type MultiFileUploadProps<Response = string> = BaseFileUploadProps<Response>;
 
-export const MultiFileUpload = <Response = string,>(props: MultiFileUploadProps<Response>): ReactNode => {
+const MemoizedFileDropzone = memo(FileDropzone);
+
+export const MultiFileUpload = <Response = string,>(props: MultiFileUploadProps<Response>): JSX.Element => {
   const { uploadService, acceptsOnly, onSuccessfulUpload, fileManager, body, sx, disabled } = props;
   const { rejectedFiles, addRejected, removeRejected } = useRejectedFileManager();
 
@@ -29,9 +31,9 @@ export const MultiFileUpload = <Response = string,>(props: MultiFileUploadProps<
 
   return (
     <Stack spacing={2}>
-      <FileDropzone
-        disabled={disabled}
+      <MemoizedFileDropzone
         sx={sx?.sx}
+        disabled={disabled}
         dragZoneSx={sx?.dragZoneSx}
         dropZoneSx={sx?.dropZoneSx}
         onFilesAccepted={upload}
@@ -39,16 +41,18 @@ export const MultiFileUpload = <Response = string,>(props: MultiFileUploadProps<
         acceptsOnly={acceptsOnly}
       >
         {memoizedBody}
-      </FileDropzone>
-      <FileUploadResults
-        rejected={rejectedFiles}
-        failed={fileUploads.failed}
-        inProgress={fileUploads.inProgress}
-        successful={onSuccessfulUpload != null ? [] : fileUploads.successful}
-        onRetry={upload}
-        onDismissRejected={removeRejected}
-        onRemoveFileUpload={removeFileUpload}
-      />
+      </MemoizedFileDropzone>
+      {(fileUploads.length > 0 || rejectedFiles.length > 0) && (
+        <FileUploadResults
+          rejected={rejectedFiles}
+          failed={fileUploads.failed}
+          inProgress={fileUploads.inProgress}
+          successful={onSuccessfulUpload != null ? [] : fileUploads.successful}
+          onRetry={upload}
+          onDismissRejected={removeRejected}
+          onRemoveFileUpload={removeFileUpload}
+        />
+      )}
     </Stack>
   );
 };

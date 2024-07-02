@@ -2,10 +2,10 @@ import { useCallback } from 'react';
 import { type FileUploaderObservers } from './types';
 import { type FileUpload } from '../types';
 
-export interface FileUploader<Response> {
+export type FileUploader<Response> = {
   /** A function that can be called to upload a file or retry a failed file upload. */
   upload: (fileOrFileUpload: File | File[] | FileUpload<Response>) => void;
-}
+};
 
 /** A type for a function that can be called to upload a file and track it's progress. */
 export type FileUploadService<Response = string> = (

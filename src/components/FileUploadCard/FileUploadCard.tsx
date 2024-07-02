@@ -4,7 +4,7 @@ import { type ReactNode } from 'react';
 import { FileUploadUtils, FileUtils } from '../../utils';
 import { type FileUpload } from '../../types';
 
-export interface FileUploadCardProps<FileUploadResponse = string> {
+export type FileUploadCardProps<FileUploadResponse = string> = {
   /** The icon that will be displayed */
   icon?: ReactNode;
   /** The variant for the card. */
@@ -12,14 +12,14 @@ export interface FileUploadCardProps<FileUploadResponse = string> {
   /** The FileUpload that will be used to build the card. */
   fileUpload: FileUpload<FileUploadResponse>;
   actions?: ReactNode;
-}
+};
 
 export const FileUploadCard = <FileUploadResponse = string,>({
   icon = <InsertDriveFile />,
   fileUpload,
   variant = 'outlined',
   actions,
-}: FileUploadCardProps<FileUploadResponse>): ReactNode => {
+}: FileUploadCardProps<FileUploadResponse>): JSX.Element => {
   const status = FileUploadUtils.formatStatus(fileUpload);
 
   return (
@@ -45,7 +45,7 @@ export const FileUploadCard = <FileUploadResponse = string,>({
 
 type LinearProgressWithLabelProps = LinearProgressProps & { value: number };
 
-const LinearProgressWithLabel = (props: LinearProgressWithLabelProps): ReactNode => (
+const LinearProgressWithLabel = (props: LinearProgressWithLabelProps): JSX.Element => (
   <Box sx={{ display: 'flex', alignItems: 'center' }}>
     <Box sx={{ width: '100%', mr: 1 }}>
       <LinearProgress variant='determinate' {...props} />

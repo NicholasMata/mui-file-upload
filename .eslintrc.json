@@ -17,7 +17,8 @@
   },
   "plugins": ["react", "prettier"],
   "rules": {
-    "@typescript-eslint/no-invalid-void-type": "off"
+    "@typescript-eslint/no-invalid-void-type": "off",
+    "@typescript-eslint/consistent-type-definitions": ["error", "type"]
   },
   "settings": {
     "react": {

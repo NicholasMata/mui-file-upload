@@ -3,10 +3,10 @@ import { FileUtils } from './file-utils';
 
 export type FriendlyAcceptType = 'extension' | 'name' | 'mime';
 
-export interface MimeType {
+export type MimeType = {
   readonly key: string;
   readonly extensions: readonly string[];
-}
+};
 
 export const AcceptUtils = {
   /**

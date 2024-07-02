@@ -5,12 +5,12 @@ import {
 } from '../components/FileDropzone/types';
 import { type Property } from 'csstype';
 
-export interface StatusColorOptions {
+export type StatusColorOptions = {
   default?: Property.Color;
   dragActive?: Property.Color;
   disabled?: Property.Color;
   error?: Property.Color;
-}
+};
 
 export const FileDropzoneStatusUtils = {
   errorStatuses: [FileDropzoneStatus.overloaded, FileDropzoneStatus.dragRejected],
@@ -68,9 +68,7 @@ export const FileDropzoneUtils = {
     dragActive1: FileDropzoneDragActive | undefined,
     dragActive2: FileDropzoneDragActive | undefined
   ): boolean {
-    return (
-      dragActive1?.hasRejectedFiles === dragActive2?.hasRejectedFiles || (dragActive1 == null && dragActive2 == null)
-    );
+    return dragActive1?.hasRejectedFiles === dragActive2?.hasRejectedFiles;
   },
 
   isSameState(state1: FileDropzoneState, state2: FileDropzoneState): boolean {
