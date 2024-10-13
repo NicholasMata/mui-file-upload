@@ -2,7 +2,7 @@ import { type Ref, forwardRef, useCallback, useMemo, type PropsWithChildren } fr
 import { type FileUploadService } from '../../hooks';
 import { type BaseMUIFieldProps } from '../types';
 import { type FileUpload } from '../../types';
-import { Box, FormHelperText, InputLabel, Stack } from '@mui/material';
+import { Box, InputLabel, Stack } from '@mui/material';
 import { type FileUploadSx, MultiFileUpload } from '../FileUpload';
 import { ImageManagerPreviewGrid } from './ImageManagerPreviewGrid';
 import { ImageManagerContextInner } from './ImageManagerContext';
@@ -68,11 +68,14 @@ export const ImageManager = forwardRef(function ImageManager(
     children,
   } = props;
 
-  const handleSuccessfulUpload = useCallback((fileUpload: FileUpload<string>): void => {
-    const tempUrl = fileUpload.responseBody;
-    if (tempUrl === undefined) return;
-    onAdd(tempUrl);
-  }, []);
+  const handleSuccessfulUpload = useCallback(
+    (fileUpload: FileUpload<string>): void => {
+      const tempUrl = fileUpload.responseBody;
+      if (tempUrl === undefined) return;
+      onAdd(tempUrl);
+    },
+    [onAdd]
+  );
 
   const sx = useMemo<FileUploadSx>(
     () => ({ dragZoneSx: () => (t) => ({ borderColor: error ? t.palette.error.main : undefined }) }),
@@ -83,56 +86,37 @@ export const ImageManager = forwardRef(function ImageManager(
     () =>
       label !== null &&
       label !== undefined && (
-        <InputLabel error={error} required={required}>
+        <InputLabel error={error} required={required} disabled={disabled}>
           {label}
         </InputLabel>
       ),
-    [label]
+    [label, required, error, disabled]
   );
 
-  const helperTextComp = useMemo(
-    () =>
-      helperText !== null && helperText !== undefined && <FormHelperText error={error}>{helperText}</FormHelperText>,
-    [helperText, error]
-  );
-
-  const body = useMemo(() => children ?? <ImageManagerPreviewGrid />, [children]);
-
-  const deleteImage = useCallback(
-    (index: number) => {
-      onDelete(index);
-    },
-    [onDelete]
-  );
-
-  const moveImage = useCallback(
-    (from: number, to: number) => {
-      onMove(from, to);
-    },
-    [onMove]
-  );
+  const body = useMemo(() => children ?? <ImageManagerPreviewGrid disabled={disabled} />, [children]);
 
   const imageManagerContext = useMemo(
     () => ({
       imageUrls: value,
-      delete: deleteImage,
-      move: moveImage,
+      delete: onDelete,
+      move: onMove,
     }),
-    [value, moveImage, deleteImage]
+    [value, onMove, onDelete]
   );
 
   return (
-    <Stack spacing={0}>
+    <Stack spacing={1}>
       {labelComp}
-      <Stack spacing={2} tabIndex={0} ref={ref}>
+      <Stack spacing={1} tabIndex={0} ref={ref}>
         <MultiFileUpload
           disabled={disabled}
           sx={sx}
           acceptsOnly={acceptsOnly}
           uploadService={uploadService}
           onSuccessfulUpload={handleSuccessfulUpload}
+          error={error}
+          helperText={helperText}
         />
-        {helperTextComp}
         {value.length > 0 && (
           <ImageManagerContextInner.Provider value={imageManagerContext}>
             <Box>{body}</Box>

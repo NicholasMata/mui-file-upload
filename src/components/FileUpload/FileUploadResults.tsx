@@ -37,7 +37,7 @@ const FileUploadResultsInner = <Response = string,>(
   <Stack spacing={1} {...stackProps} ref={ref}>
     {rejected.map((f, i) => (
       <Grow in key={`rejected-${i}`}>
-        <RejectedFileUploadAlert filename={f.name} severity='warning' onClose={() => onDismissRejected?.(f)} />
+        <RejectedFileUploadAlert filename={f.name} severity='error' onClose={() => onDismissRejected?.(f)} />
       </Grow>
     ))}
     {failed.map((f) => (

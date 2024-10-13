@@ -3,6 +3,7 @@ import { type FileUploadService, type FileUploadManager } from '../../hooks';
 import { type FileUpload } from '../../types';
 import { type SxProps, type Theme } from '@mui/material';
 import { type FileDropzoneState } from '../FileDropzone/types';
+import { type MinimumMUIFieldProps } from '../types';
 
 export type BaseFileUploadProps<Response = string> = {
   /** A service that is responsible for handling file uploads. */
@@ -17,9 +18,7 @@ export type BaseFileUploadProps<Response = string> = {
   body?: ReactNode;
   /** sx that will applied to the FileDropzone */
   sx?: FileUploadSx;
-  /** Whether the FileDropzone is disabled or not. Default: false */
-  disabled?: boolean;
-};
+} & MinimumMUIFieldProps;
 
 export type FileUploadSx = {
   /** Allows defining system overrides as well as additional CSS styles for the root container. **/

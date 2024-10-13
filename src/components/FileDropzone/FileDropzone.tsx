@@ -1,4 +1,4 @@
-import { Box, type SxProps, type Theme, alpha, useForkRef } from '@mui/material';
+import { Box, type SxProps, type Theme, alpha, Stack, FormHelperText } from '@mui/material';
 import {
   type ChangeEventHandler,
   type DragEventHandler,
@@ -14,6 +14,7 @@ import { Accept, FileDropzoneUtils } from '../../utils';
 import { FileDropzoneProvider } from './FileDropzoneContext';
 import { type FileDropzoneState } from './types';
 import { DEFAULT_BACKGROUND_ALPHA, DEFAULT_BORDER_ALPHA, DEFAULT_DRAG_ACTIVE_BACKGROUND_ALPHA } from './contants';
+import { type MinimumMUIFieldProps } from '../types';
 
 export type FileDropzoneProps = {
   /** Whether of not the FileDropzone can handle multiple files. */
@@ -36,9 +37,7 @@ export type FileDropzoneProps = {
   onFilesAccepted: (files: File[]) => void;
   /** Called when dropzone files are rejected. */
   onFilesRejected: (files: File[]) => void;
-  /** Whether the FileDropzone is disabled or not. Default: false */
-  disabled?: boolean;
-};
+} & MinimumMUIFieldProps;
 
 const defaultSx: SxProps<Theme> = {
   display: 'flex',
@@ -50,34 +49,56 @@ const requiredDefaultSx: SxProps<Theme> = {
   position: 'relative',
 };
 
-type SxPropBuilder = (disabled: boolean) => SxProps<Theme>;
+type SxPropBuilder = (disabled: boolean, error: boolean) => SxProps<Theme>;
 
-const dragActiveSx: SxPropBuilder = (disabled) => (t) => ({
-  borderColor: disabled ? undefined : t.palette.primary.main,
-  backgroundColor: disabled ? undefined : alpha(t.palette.primary.main, DEFAULT_DRAG_ACTIVE_BACKGROUND_ALPHA),
-});
+const dragActiveSx: SxPropBuilder = (disabled, error) => (t) => {
+  return {
+    borderColor: disabled || error ? undefined : t.palette.primary.main,
+    backgroundColor:
+      disabled || error ? undefined : alpha(t.palette.primary.main, DEFAULT_DRAG_ACTIVE_BACKGROUND_ALPHA),
+  };
+};
 
 const dragActiveRejectedSx: SxProps<Theme> = (t) => ({
   borderColor: t.palette.error.main,
   backgroundColor: alpha(t.palette.error.main, DEFAULT_DRAG_ACTIVE_BACKGROUND_ALPHA),
 });
 
-const defaultDragZoneSx: SxPropBuilder = (disabled) => (t) => ({
-  height: '100%',
-  display: 'flex',
-  alignItems: 'stretch',
-  justifyContent: 'center',
-  borderWidth: '2px',
-  borderRadius: '1rem',
-  borderStyle: 'dashed',
-  borderColor: disabled ? t.palette.text.disabled : alpha(t.palette.primary.main, DEFAULT_BORDER_ALPHA),
-  backgroundColor: alpha(disabled ? t.palette.text.disabled : t.palette.primary.main, DEFAULT_BACKGROUND_ALPHA),
-});
+const defaultDragZoneSx: SxPropBuilder = (disabled, error) => (t) => {
+  let color = t.palette.primary.main;
+  if (error) {
+    color = t.palette.error.main;
+  } else if (disabled) {
+    color = t.palette.text.disabled;
+  }
+
+  return {
+    height: '100%',
+    display: 'flex',
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    borderWidth: '2px',
+    borderRadius: '1rem',
+    borderStyle: 'dashed',
+    borderColor: alpha(color, DEFAULT_BORDER_ALPHA),
+    backgroundColor: alpha(color, DEFAULT_BACKGROUND_ALPHA),
+  };
+};
 
 const defaultDragZoneOverloadSx: SxProps<Theme> = (t) => ({
   borderColor: alpha(t.palette.error.main, DEFAULT_BORDER_ALPHA),
   backgroundColor: alpha(t.palette.error.main, DEFAULT_BACKGROUND_ALPHA),
 });
+
+const requiredDefaultDropZoneSx: SxProps<Theme> = {
+  position: 'absolute',
+  width: '100%',
+  height: '100%',
+  top: '0px',
+  right: '0px',
+  bottom: '0px',
+  left: '0px',
+};
 
 const defaultDropZoneSx: SxProps<Theme> = {
   borderRadius: '1rem',
@@ -95,6 +116,8 @@ export const FileDropzone = forwardRef(function FileDropzone(props: PropsWithChi
     onFilesAccepted,
     onFilesRejected,
     disabled = false,
+    error = false,
+    helperText,
     children,
   } = props;
 
@@ -104,12 +127,20 @@ export const FileDropzone = forwardRef(function FileDropzone(props: PropsWithChi
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleRef = useForkRef(inputRef, ref);
+  // const handleRef = useForkRef(inputRef, ref);
+
+  const previousEventType = useRef<string>();
 
   const handleDrag: DragEventHandler<HTMLDivElement> = useCallback(
-    function (e) {
+    (e) => {
       e.preventDefault();
       e.stopPropagation();
+
+      if (previousEventType.current === e.type) {
+        return;
+      }
+
+      previousEventType.current = e.type;
 
       if (e.type === 'dragenter' || e.type === 'dragover') {
         const newState = {
@@ -140,6 +171,7 @@ export const FileDropzone = forwardRef(function FileDropzone(props: PropsWithChi
 
   const handleFiles = useCallback(
     (files: FileList): void => {
+      console.log('Handle Files');
       const fileOverload = !allowsMultiple && files.length > 1;
       if (fileOverload) {
         setState((prev) => ({ ...prev, hasTooManyFiles: true }));
@@ -190,7 +222,6 @@ export const FileDropzone = forwardRef(function FileDropzone(props: PropsWithChi
         setState(defaultFileDropzoneState(disabled));
         return;
       }
-      console.log('handleDrop', e.dataTransfer.files);
       handleFiles(e.dataTransfer.files);
     },
     [disabled, handleFiles]
@@ -198,7 +229,10 @@ export const FileDropzone = forwardRef(function FileDropzone(props: PropsWithChi
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
     function (e) {
+      console.log('handleChange', e);
       e.preventDefault();
+      e.stopPropagation();
+
       const files = e.target.files;
       if (files != null && files.length > 0) {
         handleFiles(files);
@@ -208,7 +242,9 @@ export const FileDropzone = forwardRef(function FileDropzone(props: PropsWithChi
   );
 
   const openFileSelector = useCallback(() => {
+    console.log('clicked');
     inputRef.current?.click();
+    if (inputRef.current != null) inputRef.current.value = ''; // Believe this fixes issue where browse files stops working.
   }, [inputRef.current]);
 
   useEffect(() => {
@@ -228,40 +264,64 @@ export const FileDropzone = forwardRef(function FileDropzone(props: PropsWithChi
 
   const customDragZoneSx = useMemo(() => dragZoneSx?.(state) ?? null, [state, dragZoneSx]);
 
+  const helperTextComp = useMemo(() => {
+    if (helperText === null || helperText === undefined) return undefined;
+
+    return (
+      <FormHelperText error={error} disabled={disabled}>
+        {helperText}
+      </FormHelperText>
+    );
+  }, [disabled, error, helperText]);
+
   return (
-    <Box
-      sx={[
-        defaultSx,
-        ...(Array.isArray(sx) ? sx : [sx]),
-        requiredDefaultSx,
-        defaultDropZoneSx,
-        ...(Array.isArray(dropZoneSx) ? dropZoneSx : [dropZoneSx]),
-      ]}
-      onDragEnter={handleDrag}
-      onDragLeave={handleDrag}
-      onDragOver={handleDrag}
-      onDrop={handleDrop}
-    >
-      <input
-        disabled={disabled}
-        ref={handleRef}
-        type='file'
-        multiple={allowsMultiple}
-        accept={acceptsOnly}
-        onChange={handleChange}
-        style={{ display: 'none' }}
-      />
+    <Stack spacing={0}>
       <Box
+        id='testing'
+        ref={ref}
         sx={[
-          defaultDragZoneSx(disabled),
-          state.dragActive != null ? dragActiveSx(disabled) : null,
-          state.dragActive?.hasRejectedFiles === true ? dragActiveRejectedSx : null,
-          ...(Array.isArray(customDragZoneSx) ? customDragZoneSx : [customDragZoneSx]),
-          state.hasTooManyFiles ? defaultDragZoneOverloadSx : null,
+          defaultSx,
+          ...(Array.isArray(sx) ? sx : [sx]),
+          requiredDefaultSx,
+          defaultDropZoneSx,
+          ...(Array.isArray(dropZoneSx) ? dropZoneSx : [dropZoneSx]),
         ]}
+        onDragEnter={handleDrag}
       >
-        <FileDropzoneProvider value={contextValue}>{children}</FileDropzoneProvider>
+        <input
+          disabled={disabled}
+          ref={inputRef}
+          type='file'
+          multiple={allowsMultiple}
+          accept={acceptsOnly}
+          onChange={handleChange}
+          style={{ display: 'none' }}
+        />
+        <Box
+          sx={[
+            defaultDragZoneSx(disabled, error),
+            state.dragActive != null ? dragActiveSx(disabled, error) : null,
+            state.dragActive?.hasRejectedFiles === true ? dragActiveRejectedSx : null,
+            ...(Array.isArray(customDragZoneSx) ? customDragZoneSx : [customDragZoneSx]),
+            state.hasTooManyFiles ? defaultDragZoneOverloadSx : null,
+          ]}
+        >
+          <FileDropzoneProvider value={contextValue}>{children}</FileDropzoneProvider>
+        </Box>
+        {state.dragActive !== undefined && (
+          <Box
+            sx={[
+              defaultDropZoneSx,
+              ...(Array.isArray(dropZoneSx) ? dropZoneSx : [dropZoneSx]),
+              requiredDefaultDropZoneSx,
+            ]}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+          />
+        )}
       </Box>
-    </Box>
+      {helperTextComp}
+    </Stack>
   );
 });

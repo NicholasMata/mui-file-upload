@@ -18,7 +18,7 @@ type StoryProps = {
   disabledTitle: string;
 };
 
-type AllProps = ComponentProps<typeof MultiFileUpload<string>> & StoryProps;
+type AllProps = ComponentProps<typeof MultiFileUpload<void>> & StoryProps;
 
 const meta: Meta<AllProps> = {
   component: MultiFileUpload,
@@ -29,6 +29,9 @@ const meta: Meta<AllProps> = {
   },
   argTypes: {
     uploadService: { table: { disable: true } },
+    helperText: {
+      control: 'text',
+    },
     onSuccessfulUpload: { table: { disable: true } },
     fileManager: { table: { disable: true } },
     body: { table: { disable: true } },
@@ -41,9 +44,9 @@ export default meta;
 type Story = StoryObj<AllProps>;
 
 export const Default: Story = {
-  render: (args) => {
-    const uploadService = useFakeService({ failureRate: args.failureRate });
-    return <MultiFileUpload disabled={args.disabled} uploadService={uploadService} acceptsOnly={args.acceptsOnly} />;
+  render: ({ failureRate, ...args }) => {
+    const uploadService = useFakeService({ failureRate });
+    return <MultiFileUpload {...args} uploadService={uploadService} />;
   },
 };
 
@@ -96,6 +99,8 @@ export const CustomBody: Story = {
     const uploadService = useFakeService({ failureRate: args.failureRate });
     return (
       <MultiFileUpload
+        helperText={args.helperText}
+        error={args.error}
         disabled={args.disabled}
         sx={{
           dragZoneSx: (state) => (t) => ({

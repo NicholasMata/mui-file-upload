@@ -1,6 +1,6 @@
 {
   "name": "mui-file-upload",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.6",
   "description": "A library of components that are related to file uploads built on top of MUI",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -39,6 +39,8 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.5.0",
+    "@fontsource/material-icons": "^5.0.18",
+    "@fontsource/roboto": "^5.0.13",
     "@rollup/plugin-commonjs": "^25.0.2",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
@@ -46,6 +48,7 @@
     "@storybook/addon-essentials": "^8.1.10",
     "@storybook/addon-interactions": "^8.1.10",
     "@storybook/addon-links": "^8.1.10",
+    "@storybook/addon-themes": "^8.1.11",
     "@storybook/blocks": "^8.1.10",
     "@storybook/react": "^8.1.10",
     "@storybook/react-vite": "^8.1.10",
