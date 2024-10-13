@@ -23,7 +23,7 @@ export type FileDropzoneIconBodyProps = {
   sx?: SxProps<Theme>;
 };
 
-export const FileDropzoneIconBody: React.FC<FileDropzoneIconBodyProps> = (props: FileDropzoneIconBodyProps) => {
+export const FileDropzoneIconBody = (props: FileDropzoneIconBodyProps): JSX.Element => {
   const { dropzoneState, openFileSelector } = useFileDropzoneContext();
   const { disabled } = dropzoneState;
   const {
