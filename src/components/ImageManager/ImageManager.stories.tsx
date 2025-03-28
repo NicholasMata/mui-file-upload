@@ -2,7 +2,7 @@ import { type StoryObj, type Meta } from '@storybook/react/*';
 import { useState, type ComponentProps } from 'react';
 import { ImageManager } from './ImageManager';
 import { useImageManagerState } from './useImageManagerState';
-import { useFakeImageService } from '../../stories/utils';
+import { type ImageUpload, useFakeImageAndThumbnailService, useFakeImageService } from '../../stories/utils';
 import { type RequiredImagePreviewProps } from './SortableImageGrid';
 import { ImageManagerPreviewGrid } from './ImageManagerPreviewGrid';
 import { DarkOverlay, DeleteButton, ImagePreview } from '../ImagePreview';
@@ -15,7 +15,7 @@ type StoryProps = {
   failureRate: number;
 };
 
-type AllProps = ComponentProps<typeof ImageManager> & StoryProps;
+type AllProps = ComponentProps<typeof ImageManager<string>> & StoryProps;
 
 const meta: Meta<AllProps> = {
   component: ImageManager,
@@ -49,6 +49,7 @@ const DefaultStory = ({ failureRate, value, ...props }: AllProps): JSX.Element =
 export const Default: Story = {
   args: {
     label: 'Image',
+    disabled: false,
   },
   render: (args) => <DefaultStory {...args} />,
 };
@@ -69,7 +70,11 @@ const MyCustomImagePreview = ({
   return (
     <DraggableContainer id={props.imageUrl}>
       <ImagePreview {...props}>
-        <DeleteButton sx={{ position: 'absolute', top: -20, right: -20 }} onClick={onDelete} />
+        <DeleteButton
+          sx={{ position: 'absolute', top: -20, right: -20 }}
+          onClick={onDelete}
+          disabled={props.disabled}
+        />
         <DarkOverlay snapTo='topLeft' openCornerRadius='8px' curveOppositeCorner p={1} lineHeight={1}>
           <Typography color='white' fontWeight={500}>
             {index + 1}
@@ -83,6 +88,7 @@ const MyCustomImagePreview = ({
         {!isCoverImage && (
           <DarkOverlay snapTo='bottomRight' openCornerRadius='8px' curveOppositeCorner>
             <OptionsButton
+              disabled={props.disabled}
               color='primary'
               options={[
                 {
@@ -129,4 +135,30 @@ export const CustomImagePreview: Story = {
     label: 'Image',
   },
   render: (args) => <CustomImagePreviewStory {...args} />,
+};
+
+type AllPropsComplex = ComponentProps<typeof ImageManager<ImageUpload>> & StoryProps;
+
+const ComplexUploadResponseStory = ({ failureRate, value, ...props }: AllPropsComplex): JSX.Element => {
+  const fakeImageService = useFakeImageAndThumbnailService({ failureRate });
+  const state = useImageManagerState<ImageUpload>(value);
+
+  return (
+    <ImageManager {...props} uploadService={fakeImageService} {...state}>
+      <ImageManagerPreviewGrid<ImageUpload>
+        disabled={props.disabled}
+        getImageUrl={(response) => response.thumbnailUrl}
+        getFullSizeImageUrl={(response) => response.url}
+      />
+    </ImageManager>
+  );
+};
+
+type ComplexStory = StoryObj<AllPropsComplex>;
+
+export const ComplexUploadResponse: ComplexStory = {
+  args: {
+    label: 'Image',
+  },
+  render: (args) => <ComplexUploadResponseStory {...args} />,
 };

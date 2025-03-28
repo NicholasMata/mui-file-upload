@@ -50,3 +50,36 @@ export const useFakeImageService = ({
     });
   };
 };
+
+export type ImageUpload = {
+  thumbnailUrl: string;
+  url: string;
+};
+
+export const useFakeImageAndThumbnailService = ({
+  milliseconds = 2000,
+  failureRate = 0.1,
+}: FakeServiceOptions): FileUploadService<ImageUpload> => {
+  return async (_, o) => {
+    return await new Promise<ImageUpload>((resolve, reject) => {
+      let progress = 0;
+      const interval = setInterval(() => {
+        if (progress === 100) clearInterval(interval);
+        o(progress);
+        if (progress === 100) {
+          setTimeout(() => {
+            const value = Math.random();
+            const id = new Date().getTime() + Math.random();
+            value >= failureRate
+              ? resolve({
+                  thumbnailUrl: `https://picsum.photos/seed/${id}/854/480`,
+                  url: `https://picsum.photos/seed/${id}/1920/1080`,
+                })
+              : reject(new Error('Failed on purpose'));
+          }, 500);
+        }
+        progress++;
+      }, milliseconds / 100);
+    });
+  };
+};

@@ -3,9 +3,9 @@ import { Fab, type FabProps } from '@mui/material';
 
 export type DeleteButtonProps = Omit<FabProps, 'children'>;
 
-export const DeleteButton = ({ disabled, ...boxProps }: DeleteButtonProps): JSX.Element => {
+export const DeleteButton = (props: DeleteButtonProps): JSX.Element => {
   return (
-    <Fab color='error' size='small' {...boxProps}>
+    <Fab color='error' size='small' {...props}>
       <Delete />
     </Fab>
   );

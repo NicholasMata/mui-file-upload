@@ -1,15 +1,17 @@
 import { arrayMove } from '@dnd-kit/sortable';
 import { useMemo, useState } from 'react';
 
-export type ImageManagerState = {
-  value: string[];
-  onAdd: (url: string) => void;
+export type ImageManagerState<UploadResponse = string> = {
+  value: UploadResponse[];
+  onAdd: (url: UploadResponse) => void;
   onMove: (from: number, to: number) => void;
   onDelete: (index: number) => void;
 };
 
-export const useImageManagerState = (defaultValue?: string[] | (() => string[])): ImageManagerState => {
-  const [imageUrls, setImageUrls] = useState<string[]>(defaultValue ?? []);
+export const useImageManagerState = <UploadResponse = string>(
+  defaultValue?: UploadResponse[] | (() => UploadResponse[])
+): ImageManagerState<UploadResponse> => {
+  const [imageUrls, setImageUrls] = useState<UploadResponse[]>(defaultValue ?? []);
 
   return useMemo(
     () => ({
