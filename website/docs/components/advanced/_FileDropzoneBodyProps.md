@@ -5,6 +5,12 @@
 > Default: **"Drag the file here to start uploading" | "Drag the files here to start uploading"** <br/>
 > <sub>The pluralization is based on if used FileDropzone allowsMultiple is set to true.</sub>
 
+#### openFileSelectorTitle <sup>ReactNode</sup>
+
+> The title of the button that will open the file selector dialog
+>
+> Default: **"Click to upload" | "Browse files"**
+
 #### dropTitle <sup>ReactNode</sup>
 
 > The title of the zone that will be displayed when something can be dropped on it

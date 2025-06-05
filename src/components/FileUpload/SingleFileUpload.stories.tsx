@@ -18,6 +18,7 @@ type StoryProps = {
   title: string;
   dropTitle: string;
   disabledTitle: string;
+  openFileSelectorTitle: string;
 };
 
 type AllProps = ComponentProps<typeof SingleFileUpload<string>> & StoryProps;
@@ -64,6 +65,7 @@ export const CustomTitle: Story = {
     title: 'Custom Title Text',
     dropTitle: 'Custom Drop Text',
     disabledTitle: 'Custom Disabled Text',
+    openFileSelectorTitle: 'Custom Open File Browser',
   },
 
   render: (args) => {
@@ -75,9 +77,10 @@ export const CustomTitle: Story = {
         sx={{ dragZoneSx: () => ({ borderStyle: 'solid', borderWidth: 1, borderRadius: 0 }) }}
         body={
           <FileDropzoneInputBody
-            title='Custom text here'
-            dropTitle='Custom drop text here'
-            disabledTitle='Custom disabled text here'
+            title={args.title}
+            dropTitle={args.dropTitle}
+            disabledTitle={args.disabledTitle}
+            openFileSelectorTitle={args.openFileSelectorTitle}
           />
         }
         acceptsOnly={args.acceptsOnly}

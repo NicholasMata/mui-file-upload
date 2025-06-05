@@ -16,6 +16,7 @@ type StoryProps = {
   title: string;
   dropTitle: string;
   disabledTitle: string;
+  openFileSelectorTitle: string;
 };
 
 type AllProps = ComponentProps<typeof MultiFileUpload<void>> & StoryProps;
@@ -55,6 +56,7 @@ export const CustomTitle: Story = {
     title: 'Custom Title Text',
     dropTitle: 'Custom Drop Text',
     disabledTitle: 'Custom Disabled Text',
+    openFileSelectorTitle: 'Custom Browse Files Text',
   },
   render: (args) => {
     const uploadService = useFakeService({ failureRate: args.failureRate });
@@ -67,6 +69,7 @@ export const CustomTitle: Story = {
             title={args.title}
             dropTitle={<Typography>{args.dropTitle}</Typography>}
             disabledTitle={args.disabledTitle}
+            openFileSelectorTitle={args.openFileSelectorTitle}
           />
         }
         uploadService={uploadService}

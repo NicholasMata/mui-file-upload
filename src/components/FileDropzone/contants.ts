@@ -4,6 +4,10 @@ export const getDefaultBodyTitle = (allowsMultiple: boolean): string =>
 export const getDefaultDropBodyTitle = (allowsMultiple: boolean): string =>
   `Drop the file${allowsMultiple ? 's' : ''} to start uploading`;
 
+export const DEFAULT_BROWSE_FILES_TITLE = 'Browse files';
+
+export const DEFAULT_CLICK_TO_UPLOAD_TITLE = 'Click to upload';
+
 export const DEFAULT_FILE_OVERLOAD_TITLE = 'Too many files have been dragged';
 
 export const DEFAULT_FILE_DRAG_REJECTED_TITLE = 'Dragged files have invalid file type';

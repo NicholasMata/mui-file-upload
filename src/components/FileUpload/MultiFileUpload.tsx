@@ -10,7 +10,18 @@ export type MultiFileUploadProps<Response = string> = BaseFileUploadProps<Respon
 const MemoizedFileDropzone = memo(FileDropzone);
 
 export const MultiFileUpload = <Response = string,>(props: MultiFileUploadProps<Response>): JSX.Element => {
-  const { uploadService, acceptsOnly, onSuccessfulUpload, fileManager, body, sx, disabled, error, helperText } = props;
+  const {
+    uploadService,
+    acceptsOnly,
+    onSuccessfulUpload,
+    fileManager,
+    body,
+    sx,
+    disabled,
+    error,
+    helperText,
+    statusFormatter,
+  } = props;
   const { rejectedFiles, addRejected, removeRejected } = useRejectedFileManager();
 
   const { fileUploads, removeFileUpload, handlers } = fileManager ?? useFileUploadManager<Response>();
@@ -53,6 +64,7 @@ export const MultiFileUpload = <Response = string,>(props: MultiFileUploadProps<
           onRetry={upload}
           onDismissRejected={removeRejected}
           onRemoveFileUpload={removeFileUpload}
+          statusFormatter={statusFormatter}
         />
       )}
     </Stack>

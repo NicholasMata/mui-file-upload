@@ -2,6 +2,7 @@ import { Link, type SxProps, type Theme, Typography } from '@mui/material';
 import { type ReactNode, useMemo } from 'react';
 import { useFileDropzoneContext } from './hooks';
 import {
+  DEFAULT_CLICK_TO_UPLOAD_TITLE,
   DEFAULT_FILE_DRAG_REJECTED_TITLE,
   DEFAULT_FILE_DROPZONE_DISABLED,
   DEFAULT_FILE_OVERLOAD_TITLE,
@@ -14,6 +15,8 @@ import { FileDropzoneStatusUtils } from '../../utils';
 export type FileDropzoneInputBodyProps = {
   /** The title of the input. Will be prefixed with "Click to upload " */
   title?: ReactNode;
+  /** The title of the button that will open the file selector dialog. */
+  openFileSelectorTitle?: ReactNode;
   /**
    * The title of the input that will be displayed when something can be dropped on it.
    * Will be prefixed with "Click to upload "
@@ -34,6 +37,7 @@ export const FileDropzoneInputBody = (props: FileDropzoneInputBodyProps): JSX.El
   const { disabled } = dropzoneState;
   const {
     title = `or ${getDefaultBodyTitle(allowsMultiple).toLowerCase()}`,
+    openFileSelectorTitle = DEFAULT_CLICK_TO_UPLOAD_TITLE,
     dropTitle = `or ${getDefaultDropBodyTitle(allowsMultiple).toLowerCase()}`,
     fileOverloadTitle = DEFAULT_FILE_OVERLOAD_TITLE,
     dragRejectedTitle = DEFAULT_FILE_DRAG_REJECTED_TITLE,
@@ -73,7 +77,7 @@ export const FileDropzoneInputBody = (props: FileDropzoneInputBodyProps): JSX.El
     >
       {!isError && !disabled && (
         <Link sx={{ cursor: 'pointer' }} onClick={openFileSelector}>
-          Click to upload
+          {openFileSelectorTitle}
         </Link>
       )}{' '}
       {titleComponent}

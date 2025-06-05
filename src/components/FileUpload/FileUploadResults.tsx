@@ -19,6 +19,12 @@ type Props<Response = string> = {
   onRetry?: (fileUpload: FileUpload<Response>) => void;
   /** Called when a file upload needs to be removed. */
   onRemoveFileUpload?: (fileUpload: FileUpload<Response>) => void;
+  /**
+   * Returns a custom status label for a file upload e.g. "Uploading", "Failed" or "Completed".
+   * @param fileUpload File upload for which the status should be formatted
+   * @returns Status label for the file upload
+   */
+  statusFormatter?: (fileUpload: FileUpload<Response>) => string;
 } & StackProps;
 
 const FileUploadResultsInner = <Response = string,>(
@@ -30,6 +36,7 @@ const FileUploadResultsInner = <Response = string,>(
     onDismissRejected,
     onRetry,
     onRemoveFileUpload,
+    statusFormatter,
     ...stackProps
   }: Props<Response>,
   ref?: Ref<HTMLDivElement>
@@ -45,12 +52,13 @@ const FileUploadResultsInner = <Response = string,>(
         key={f.id}
         fileUpload={f}
         actions={<FileUploadCardActions onRemove={() => onRemoveFileUpload?.(f)} onRetry={() => onRetry?.(f)} />}
+        statusFormatter={statusFormatter}
       />
     ))}
     {inProgress.map((f) => (
       <Fade in={true} key={f.id}>
         <Box>
-          <FileUploadCard fileUpload={f} />
+          <FileUploadCard fileUpload={f} statusFormatter={statusFormatter} />
         </Box>
       </Fade>
     ))}
@@ -59,6 +67,7 @@ const FileUploadResultsInner = <Response = string,>(
         fileUpload={f}
         key={f.id}
         actions={<FileUploadCardActions onRemove={() => onRemoveFileUpload?.(f)} />}
+        statusFormatter={statusFormatter}
       />
     ))}
   </Stack>

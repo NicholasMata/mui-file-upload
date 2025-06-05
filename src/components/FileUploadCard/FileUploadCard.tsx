@@ -12,6 +12,12 @@ export type FileUploadCardProps<FileUploadResponse = string> = {
   /** The FileUpload that will be used to build the card. */
   fileUpload: FileUpload<FileUploadResponse>;
   actions?: ReactNode;
+  /**
+   * Returns a custom status label for a file upload e.g. "Uploading", "Failed" or "Completed".
+   * @param fileUpload File upload for which the status should be formatted
+   * @returns Status label for the file upload
+   */
+  statusFormatter?: (fileUpload: FileUpload<FileUploadResponse>) => string;
 };
 
 export const FileUploadCard = <FileUploadResponse = string,>({
@@ -19,8 +25,9 @@ export const FileUploadCard = <FileUploadResponse = string,>({
   fileUpload,
   variant = 'outlined',
   actions,
+  statusFormatter,
 }: FileUploadCardProps<FileUploadResponse>): JSX.Element => {
-  const status = FileUploadUtils.formatStatus(fileUpload);
+  const status = (statusFormatter ?? FileUploadUtils.formatStatus)(fileUpload);
 
   return (
     <Card variant={variant}>
@@ -29,7 +36,7 @@ export const FileUploadCard = <FileUploadResponse = string,>({
         title={fileUpload.file.name}
         subheader={
           <Stack>
-            <Typography variant='caption' color={status === 'Failed' ? 'error' : 'text.secondary'}>
+            <Typography variant='caption' color={fileUpload.failed === true ? 'error' : 'text.secondary'}>
               {FileUtils.formatFileSize(fileUpload.file.size)} · {status}
             </Typography>
             {!fileUpload.completed ? (

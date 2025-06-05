@@ -42,3 +42,7 @@ All the following props are optional meaning they can be undefined.
 >
 > Default: **undefined**<br/>
 
+#### statusFormatter <sup>(fileUpload: FileUpload\<Response\>) => string</sup>
+> Returns a custom status label for a file upload e.g. "Uploading", "Failed" or "Completed".
+>
+> Default: **undefined**<br/>

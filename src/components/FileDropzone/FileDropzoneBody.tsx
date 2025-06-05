@@ -4,6 +4,7 @@ import { FileDropzoneStatusUtils } from '../../utils';
 import { useFileDropzoneContext } from './hooks';
 import { type ReactNode, useMemo } from 'react';
 import {
+  DEFAULT_BROWSE_FILES_TITLE,
   DEFAULT_FILE_DRAG_REJECTED_TITLE,
   DEFAULT_FILE_DROPZONE_DISABLED,
   DEFAULT_FILE_OVERLOAD_TITLE,
@@ -15,6 +16,8 @@ import { FileDropzoneStatus } from './types';
 export type FileDropzoneBodyProps = {
   /** The default title of the zone. */
   title?: ReactNode;
+  /** The title of the button that will open the file selector dialog. */
+  openFileSelectorTitle?: ReactNode;
   /**
    * The title of the zone that will be displayed when something can be dropped on it.
    */
@@ -33,6 +36,7 @@ export const FileDropzoneBody = (props: FileDropzoneBodyProps): JSX.Element => {
 
   const {
     title: normalTitle = getDefaultBodyTitle(allowsMultiple),
+    openFileSelectorTitle = DEFAULT_BROWSE_FILES_TITLE,
     dropTitle = getDefaultDropBodyTitle(allowsMultiple),
     fileOverloadTitle = DEFAULT_FILE_OVERLOAD_TITLE,
     dragRejectedTitle = DEFAULT_FILE_DRAG_REJECTED_TITLE,
@@ -122,7 +126,7 @@ export const FileDropzoneBody = (props: FileDropzoneBodyProps): JSX.Element => {
         onClick={openFileSelector}
         className='upload-button'
       >
-        Browse files
+        {openFileSelectorTitle}
       </Button>
     </Stack>
   );

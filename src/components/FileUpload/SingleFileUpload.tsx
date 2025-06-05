@@ -16,6 +16,7 @@ export const SingleFileUpload = <Response = string,>(props: SingleFileUploadProp
     body = <FileDropzoneInputBody />,
     sx,
     disabled,
+    statusFormatter,
   } = props;
   const { rejectedFiles, addRejected, removeRejected } = useRejectedFileManager();
 
@@ -71,6 +72,7 @@ export const SingleFileUpload = <Response = string,>(props: SingleFileUploadProp
           onRetry={upload}
           onDismissRejected={removeRejected}
           onRemoveFileUpload={removeFileUpload}
+          statusFormatter={statusFormatter}
         />
       </Fade>
     </Box>

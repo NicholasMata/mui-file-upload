@@ -10,6 +10,12 @@ export type BaseFileUploadProps<Response = string> = {
   uploadService: FileUploadService<Response>;
   /** Called when a upload was successful. If this is provided then successful file uploads need to be rendered externally. */
   onSuccessfulUpload?: (fileUpload: FileUpload<Response>) => void;
+  /**
+   * Returns a custom status label for a file upload e.g. "Uploading", "Failed" or "Completed".
+   * @param fileUpload File upload for which the status should be formatted
+   * @returns Status label for the file upload
+   */
+  statusFormatter?: (fileUpload: FileUpload<Response>) => string;
   /** A file manager responsible for handling different states.  */
   fileManager?: FileUploadManager<Response>;
   /** A accept string which states which file types are allowed to be uploaded. */
